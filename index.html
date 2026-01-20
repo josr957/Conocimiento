@@ -83,12 +83,15 @@
       display:flex;
       align-items:center;
       gap:12px;
+      justify-content: space-between; /* LOGO A LA DERECHA */
     }
+
     .brand img{
       width:52px;height:52px;border-radius:14px;
       object-fit:cover;
       border: 1px solid rgba(255,255,255,.35);
       box-shadow: 0 10px 25px rgba(2,6,23,.18);
+      flex: 0 0 auto;
     }
     body.dark .brand img{ border-color: rgba(148,163,184,.25); }
 
@@ -481,20 +484,25 @@
     }
   </style>
 </head>
+
 <body>
 
   <aside class="sidebar" id="sidebar">
     <div class="glass brand">
-      
-    <img src="./LOGO.png" alt="LOGO"
-     onerror="this.outerHTML='<div style=\'font-weight:800;color:#ef4444\'>LOGO NO CARGA: '+this.src+'</div>';">
 
-     <div style="min-width:0">
-  <h1>Mis Artículos</h1>
-  <p>Archivo de divulgación</p>
-</div>
+      <div style="min-width:0">
+        <h1>Mis Artículos</h1>
+        <p>Archivo de divulgación</p>
+      </div>
 
-<img src="./logo.png" alt="Logo">
+      <!-- LOGO (con fallback automático) -->
+      <img
+        src="./LOGO.png"
+        alt="Logo"
+        loading="eager"
+        decoding="async"
+        onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/josr957/Conocimiento/main/LOGO.png';"
+      />
 
     </div>
 
@@ -943,13 +951,6 @@
     setThemeFromStorage();
     loadArticles();
   </script>
+
 </body>
 </html>
-
-
-
-
-
-
-
-
