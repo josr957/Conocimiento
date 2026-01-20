@@ -1,208 +1,1996 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JOSÉ MARÍA PÉREZ QUINTANA - Artículos</title>
-    <style>
-        :root {
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --text: #f1f5f9;
-            --text-muted: #94a3b8;
-            --accent: #22c55e;
-            --accent-hover: #4ade80;
-            --card-bg: #111827;
-        }
 
-        body {
-            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 0;
-            line-height: 1.7;
-        }
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>JOSÉ MARÍA PÉREZ QUINTANA</title>
+        <style>
+            :root {
+                --bg: #0f172a;
+                --panel: #111827;
+                --text: #e5e7eb;
+                --text-muted: #9ca3af;
+                --accent: #22c55e;
+                --accent-hover: #16a34a;
+            }
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                background-color: var(--bg);
+                color: var(--text);
+                margin: 0;
+                padding: 0;
+                line-height: 1.6;
+            }
+            .container {
+                max-width: 900px;
+                margin: 0 auto;
+                padding: 40px 20px;
+            }
+            header {
+                text-align: center;
+                margin-bottom: 50px;
+                border-bottom: 1px solid #1e293b;
+                padding-bottom: 30px;
+            }
+            h1 {
+                color: #ffffff;
+                font-size: 2.5rem;
+                margin-bottom: 10px;
+            }
+            .bio {
+                color: #cbd5e1;
+                font-size: 1.1rem;
+                max-width: 700px;
+                margin: 0 auto;
+            }
+            .search-container {
+                margin-bottom: 30px;
+            }
+            #searchBar {
+                width: 100%;
+                padding: 12px;
+                border-radius: 8px;
+                border: 1px solid #334155;
+                background-color: var(--panel);
+                color: white;
+                font-size: 1rem;
+            }
+            .article-list {
+                display: grid;
+                gap: 15px;
+            }
+            .article-card {
+                background-color: var(--panel);
+                padding: 20px;
+                border-radius: 10px;
+                text-decoration: none;
+                color: inherit;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                transition: transform 0.2s, border-color 0.2s;
+                border: 1px solid transparent;
+            }
+            .article-card:hover {
+                transform: translateX(10px);
+                border-color: var(--accent);
+            }
+            .article-card h3 {
+                margin: 0;
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+            .btn-view {
+                background-color: var(--accent);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-weight: bold;
+                font-size: 0.9rem;
+            }
+            footer {
+                margin-top: 50px;
+                text-align: center;
+                font-size: 0.9rem;
+                color: var(--text-muted);
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <header>
+                <h1>JOSÉ MARÍA PÉREZ QUINTANA</h1>
+                <p class="bio">Divulgo ciencia, historia, política, filosofía y curiosidades. El propósito es aportar conocimiento, no entro en polémicas y cuando doy una opinión personal sobre algo lo advierto, pero es mi opinión no tiene porque ser una certeza. Leo los comentarios pero por norma general no los contesto. Alguien dijo una vez TODO LO QUE OIMOS ES UNA OPINIÓN NO UN HECHO, Y TODO LO QUE VEMOS ES UNA PERSPECTIVA NO LA VERDAD</p>
+            </header>
 
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
+            <div class="search-container">
+                <input type="text" id="searchBar" placeholder="Buscar artículo..." onkeyup="filterArticles()">
+            </div>
 
-        header {
-            text-align: center;
-            margin-bottom: 60px;
-        }
-
-        h1 {
-            font-size: 3rem;
-            letter-spacing: -0.025em;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #fff, var(--text-muted));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-weight: 800;
-        }
-
-        .bio {
-            color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-            border-left: 4px solid var(--accent);
-            padding-left: 20px;
-            background: rgba(34, 197, 94, 0.05);
-            padding: 20px;
-            border-radius: 0 12px 12px 0;
-        }
-
-        .search-container {
-            position: sticky;
-            top: 20px;
-            z-index: 100;
-            margin-bottom: 40px;
-        }
-
-        #searchBar {
-            width: 100%;
-            padding: 16px 24px;
-            border-radius: 50px;
-            border: 1px solid #334155;
-            background-color: rgba(17, 24, 39, 0.8);
-            backdrop-filter: blur(8px);
-            color: white;
-            font-size: 1.1rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
-            transition: all 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        #searchBar:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-        }
-
-        .article-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-        }
-
-        .article-card {
-            background-color: var(--card-bg);
-            padding: 25px;
-            border-radius: 16px;
-            text-decoration: none;
-            color: inherit;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid #1e293b;
-            height: 100%;
-            box-sizing: border-box;
-        }
-
-        .article-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-        }
-
-        .article-card h3 {
-            margin: 0 0 15px 0;
-            font-size: 1.25rem;
-            font-weight: 600;
-            line-height: 1.4;
-            color: #ffffff;
-        }
-
-        .btn-view {
-            align-self: flex-start;
-            color: var(--accent);
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: flex;
-            align-items: center;
-        }
-
-        .btn-view::after {
-            content: '→';
-            margin-left: 8px;
-            transition: transform 0.2s;
-        }
-
-        .article-card:hover .btn-view::after {
-            transform: translateX(5px);
-        }
-
-        footer {
-            margin-top: 80px;
-            text-align: center;
-            padding: 40px;
-            border-top: 1px solid #1e293b;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        @media (max-width: 640px) {
-            h1 { font-size: 2rem; }
-            .article-list { grid-template-columns: 1fr; }
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>JOSÉ MARÍA PÉREZ QUINTANA</h1>
-            <p class="bio">
-                Divulgo ciencia, historia, política, filosofía y curiosidades. El propósito es aportar conocimiento, 
-                no entro en polémicas y cuando doy una opinión personal sobre algo lo advierto, pero es mi opinión 
-                no tiene porque ser una certeza. Leo los comentarios pero por norma general no los contesto. 
-                "Todo lo que oímos es una opinión, no un hecho, y todo lo que vemos es una perspectiva, no la verdad."
-            </p>
-        </header>
-
-        <div class="search-container">
-            <input type="text" id="searchBar" placeholder="Buscar en la biblioteca de artículos..." onkeyup="filterArticles()">
+            <div class="article-list" id="articleList">
+    
+                <a href="https://josr957.blogspot.com/2025/02/1984-una-distopia-cada-vez-mas-real.html" target="_blank" class="article-card" data-title="1984 una distopia cada vez mas real">
+                    <h3>1984 una distopia cada vez mas real</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/3.html" target="_blank" class="article-card" data-title="3">
+                    <h3>3</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/4-inteligencia-artificial-la_12.html" target="_blank" class="article-card" data-title="4 inteligencia artificial la 12">
+                    <h3>4 inteligencia artificial la 12</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/5-un-futuro-diferente-pensemos-en.html" target="_blank" class="article-card" data-title="5 un futuro diferente pensemos en">
+                    <h3>5 un futuro diferente pensemos en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/africa-sahel-parte-i-cuales-son-las.html" target="_blank" class="article-card" data-title="africa sahel parte i cuales son las">
+                    <h3>Africa sahel parte i cuales son las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/africa-sahel-parte-ii-como-afecta-la.html" target="_blank" class="article-card" data-title="africa sahel parte ii como afecta la">
+                    <h3>Africa sahel parte ii como afecta la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/africa-sahel-parte-iii-como-afecta-la.html" target="_blank" class="article-card" data-title="africa sahel parte iii como afecta la">
+                    <h3>Africa sahel parte iii como afecta la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/africa-sahel-parte-iv-como-pueden-los.html" target="_blank" class="article-card" data-title="africa sahel parte iv como pueden los">
+                    <h3>Africa sahel parte iv como pueden los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/africa-sahel-parte-v-ultima-como-pueden.html" target="_blank" class="article-card" data-title="africa sahel parte v ultima como pueden">
+                    <h3>Africa sahel parte v ultima como pueden</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/agenda-2030-negocio-o-realidad.html" target="_blank" class="article-card" data-title="agenda 2030 negocio o realidad">
+                    <h3>Agenda 2030 negocio o realidad</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/agujeros-blancos-teoria-paradojas-y-el.html" target="_blank" class="article-card" data-title="agujeros blancos teoria paradojas y el">
+                    <h3>Agujeros blancos teoria paradojas y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/al-naslaa-introduccion-en-pleno.html" target="_blank" class="article-card" data-title="al naslaa introduccion en pleno">
+                    <h3>Al naslaa introduccion en pleno</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/amazonas-introduccion-las-amazonas-son.html" target="_blank" class="article-card" data-title="amazonas introduccion las amazonas son">
+                    <h3>Amazonas introduccion las amazonas son</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/analisis-critico-al-manifiesto.html" target="_blank" class="article-card" data-title="analisis critico al manifiesto">
+                    <h3>Analisis critico al manifiesto</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/anibal-barca-introduccion-anibal-barca.html" target="_blank" class="article-card" data-title="anibal barca introduccion anibal barca">
+                    <h3>Anibal barca introduccion anibal barca</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/animales-abisales-introduccion-las.html" target="_blank" class="article-card" data-title="animales abisales introduccion las">
+                    <h3>Animales abisales introduccion las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/animales-fascinantes-introduccion-el.html" target="_blank" class="article-card" data-title="animales fascinantes introduccion el">
+                    <h3>Animales fascinantes introduccion el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/antes-de-abordar-un-posible-futuro.html" target="_blank" class="article-card" data-title="antes de abordar un posible futuro">
+                    <h3>Antes de abordar un posible futuro</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/antigravedad-y-masa-negativa-explorando.html" target="_blank" class="article-card" data-title="antigravedad y masa negativa explorando">
+                    <h3>Antigravedad y masa negativa explorando</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/apocrifos-introduccion-la-tradicion.html" target="_blank" class="article-card" data-title="apocrifos introduccion la tradicion">
+                    <h3>Apocrifos introduccion la tradicion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/arca-de-la-alianza-introduccion-el-arca.html" target="_blank" class="article-card" data-title="arca de la alianza introduccion el arca">
+                    <h3>Arca de la alianza introduccion el arca</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/articulo-completo-sobre-las-brujas-1.html" target="_blank" class="article-card" data-title="articulo completo sobre las brujas 1">
+                    <h3>Articulo completo sobre las brujas 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/asenat-esposa-de-jose-de-egipto.html" target="_blank" class="article-card" data-title="asenat esposa de jose de egipto">
+                    <h3>Asenat esposa de jose de egipto</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/aura-mito-o-realidad-parte-i.html" target="_blank" class="article-card" data-title="aura mito o realidad parte i">
+                    <h3>Aura mito o realidad parte i</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/aura-mito-o-realidad-parte-ii.html" target="_blank" class="article-card" data-title="aura mito o realidad parte ii">
+                    <h3>Aura mito o realidad parte ii</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/automatizacion-en-logistica-drones-y.html" target="_blank" class="article-card" data-title="automatizacion en logistica drones y">
+                    <h3>Automatizacion en logistica drones y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/axolotes-introduccion-el-axolote.html" target="_blank" class="article-card" data-title="axolotes introduccion el axolote">
+                    <h3>Axolotes introduccion el axolote</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/ayn-rand-pensamiento-introduccion.html" target="_blank" class="article-card" data-title="ayn rand pensamiento introduccion">
+                    <h3>Ayn rand pensamiento introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/batalla-cul-tural-una-respuesta-critica.html" target="_blank" class="article-card" data-title="batalla cul tural una respuesta critica">
+                    <h3>Batalla cul tural una respuesta critica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/bioimpresion-3d-de-organos-la-hoja-de.html" target="_blank" class="article-card" data-title="bioimpresion 3d de organos la hoja de">
+                    <h3>Bioimpresion 3d de organos la hoja de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/biomimetismo-y-diseno-estructural.html" target="_blank" class="article-card" data-title="biomimetismo y diseno estructural">
+                    <h3>Biomimetismo y diseno estructural</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/biotecnologia-y-medicina-personalizada-1.html" target="_blank" class="article-card" data-title="biotecnologia y medicina personalizada 1">
+                    <h3>Biotecnologia y medicina personalizada 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/blas-de-lezo-introduccion-la-historia.html" target="_blank" class="article-card" data-title="blas de lezo introduccion la historia">
+                    <h3>Blas de lezo introduccion la historia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/breve-explicacion-la-teoria-de-juegos.html" target="_blank" class="article-card" data-title="breve explicacion la teoria de juegos">
+                    <h3>Breve explicacion la teoria de juegos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/breve-informe-sobre-pilas-nucleares-de.html" target="_blank" class="article-card" data-title="breve informe sobre pilas nucleares de">
+                    <h3>Breve informe sobre pilas nucleares de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/buda-introduccion-buda-mas-alla-del.html" target="_blank" class="article-card" data-title="buda introduccion buda mas alla del">
+                    <h3>Buda introduccion buda mas alla del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/camaras-de-vacio-cuantico-y-energia-del.html" target="_blank" class="article-card" data-title="camaras de vacio cuantico y energia del">
+                    <h3>Camaras de vacio cuantico y energia del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/cambio-climatico-lo-esta-acelerando-la.html" target="_blank" class="article-card" data-title="cambio climatico lo esta acelerando la">
+                    <h3>Cambio climatico lo esta acelerando la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/capitalismo-socialismo-una-reflexion-1.html" target="_blank" class="article-card" data-title="capitalismo socialismo una reflexion 1">
+                    <h3>Capitalismo socialismo una reflexion 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/cerebros-hibridos-sinopsis-humanas-y.html" target="_blank" class="article-card" data-title="cerebros hibridos sinopsis humanas y">
+                    <h3>Cerebros hibridos sinopsis humanas y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/chamanes-mejicanos-introduccion-la.html" target="_blank" class="article-card" data-title="chamanes mejicanos introduccion la">
+                    <h3>Chamanes mejicanos introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/che-guevara-1.html" target="_blank" class="article-card" data-title="che guevara 1">
+                    <h3>Che guevara 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/ciberseguridad-cuantica-la-amenaza-de.html" target="_blank" class="article-card" data-title="ciberseguridad cuantica la amenaza de">
+                    <h3>Ciberseguridad cuantica la amenaza de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/cigarras-introduccion-las-cigarras-son.html" target="_blank" class="article-card" data-title="cigarras introduccion las cigarras son">
+                    <h3>Cigarras introduccion las cigarras son</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/civilizaciones-perdidas-con.html" target="_blank" class="article-card" data-title="civilizaciones perdidas con">
+                    <h3>Civilizaciones perdidas con</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/clase-politica-los-verdaderos.html" target="_blank" class="article-card" data-title="clase politica los verdaderos">
+                    <h3>Clase politica los verdaderos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/cleopatra-parte-i-cleopatra-la-ultima.html" target="_blank" class="article-card" data-title="cleopatra parte i cleopatra la ultima">
+                    <h3>Cleopatra parte i cleopatra la ultima</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/cleopatra-parte-ii-marco-antonio-y.html" target="_blank" class="article-card" data-title="cleopatra parte ii marco antonio y">
+                    <h3>Cleopatra parte ii marco antonio y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/club-bildelberg-el-imperio-invisible-1.html" target="_blank" class="article-card" data-title="club bildelberg el imperio invisible 1">
+                    <h3>Club bildelberg el imperio invisible 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/como-comenzo-la-vida-introduccion-la.html" target="_blank" class="article-card" data-title="como comenzo la vida introduccion la">
+                    <h3>Como comenzo la vida introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/como-interactuar-con-la-ia-1.html" target="_blank" class="article-card" data-title="como interactuar con la ia 1">
+                    <h3>Como interactuar con la ia 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/componentes-del-universo-introduccion.html" target="_blank" class="article-card" data-title="componentes del universo introduccion">
+                    <h3>Componentes del universo introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/computacion-biologica-y-eladn-como.html" target="_blank" class="article-card" data-title="computacion biologica y eladn como">
+                    <h3>Computacion biologica y eladn como</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/computacion-neuromorfica-el-desarrollo.html" target="_blank" class="article-card" data-title="computacion neuromorfica el desarrollo">
+                    <h3>Computacion neuromorfica el desarrollo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/conciencia-introduccion-la-conciencia.html" target="_blank" class="article-card" data-title="conciencia introduccion la conciencia">
+                    <h3>Conciencia introduccion la conciencia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/confucio-el-sabio-que-ordeno-la-etica.html" target="_blank" class="article-card" data-title="confucio el sabio que ordeno la etica">
+                    <h3>Confucio el sabio que ordeno la etica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/conspiraciones-verdad-o-ciencia-ficcion.html" target="_blank" class="article-card" data-title="conspiraciones verdad o ciencia ficcion">
+                    <h3>Conspiraciones verdad o ciencia ficcion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/cristales-cuanticos-introduccion-en-el.html" target="_blank" class="article-card" data-title="cristales cuanticos introduccion en el">
+                    <h3>Cristales cuanticos introduccion en el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/cuando-las-regulaciones-dejan-de.html" target="_blank" class="article-card" data-title="cuando las regulaciones dejan de">
+                    <h3>Cuando las regulaciones dejan de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/cubos-de-coventry-introduccion-los.html" target="_blank" class="article-card" data-title="cubos de coventry introduccion los">
+                    <h3>Cubos de coventry introduccion los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/cultura-olmeca-introduccion-la-cultura.html" target="_blank" class="article-card" data-title="cultura olmeca introduccion la cultura">
+                    <h3>Cultura olmeca introduccion la cultura</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/defensa-de-la-energia-nuclear-1.html" target="_blank" class="article-card" data-title="defensa de la energia nuclear 1">
+                    <h3>Defensa de la energia nuclear 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/democracia-la-palabra-democracia-tiene.html" target="_blank" class="article-card" data-title="democracia la palabra democracia tiene">
+                    <h3>Democracia la palabra democracia tiene</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/desarrollo-de-algoritmos-de.html" target="_blank" class="article-card" data-title="desarrollo de algoritmos de">
+                    <h3>Desarrollo de algoritmos de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/desarrollo-de-chips-fotonicos-para.html" target="_blank" class="article-card" data-title="desarrollo de chips fotonicos para">
+                    <h3>Desarrollo de chips fotonicos para</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/deshielo-en-los-polos-y-su-impacto-en.html" target="_blank" class="article-card" data-title="deshielo en los polos y su impacto en">
+                    <h3>Deshielo en los polos y su impacto en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/determinismo-vs.html" target="_blank" class="article-card" data-title="determinismo vs">
+                    <h3>Determinismo vs</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/dietas-alimentacion-integral-1.html" target="_blank" class="article-card" data-title="dietas alimentacion integral 1">
+                    <h3>Dietas alimentacion integral 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/disco-celeste-de-nebra-introduccion-el.html" target="_blank" class="article-card" data-title="disco celeste de nebra introduccion el">
+                    <h3>Disco celeste de nebra introduccion el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/diseno-de-ciudad-futurista.html" target="_blank" class="article-card" data-title="diseno de ciudad futurista">
+                    <h3>Diseno de ciudad futurista</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/dragon-de-komodo-el-dragon-de-komodo.html" target="_blank" class="article-card" data-title="dragon de komodo el dragon de komodo">
+                    <h3>Dragon de komodo el dragon de komodo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/drones-presente-futuro-los-drones-o.html" target="_blank" class="article-card" data-title="drones presente futuro los drones o">
+                    <h3>Drones presente futuro los drones o</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/drusos-introduccion-los-drusos.html" target="_blank" class="article-card" data-title="drusos introduccion los drusos">
+                    <h3>Drusos introduccion los drusos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/economia-de-la-longevidad-el-impacto-de.html" target="_blank" class="article-card" data-title="economia de la longevidad el impacto de">
+                    <h3>Economia de la longevidad el impacto de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/ecos-sismicos-y-la-hipotesis-de-la.html" target="_blank" class="article-card" data-title="ecos sismicos y la hipotesis de la">
+                    <h3>Ecos sismicos y la hipotesis de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-acantilado-de-kuiper-introduccion.html" target="_blank" class="article-card" data-title="el acantilado de kuiper introduccion">
+                    <h3>El acantilado de kuiper introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-arte-como-tecnologia-cognitiva-como.html" target="_blank" class="article-card" data-title="el arte como tecnologia cognitiva como">
+                    <h3>El arte como tecnologia cognitiva como</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/el-boson-de-higgs-introduccion-durante.html" target="_blank" class="article-card" data-title="el boson de higgs introduccion durante">
+                    <h3>El boson de higgs introduccion durante</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/el-codigo-de-hammurabi-y-la-ley-del.html" target="_blank" class="article-card" data-title="el codigo de hammurabi y la ley del">
+                    <h3>El codigo de hammurabi y la ley del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/el-concepto-de-justicia-lo-largo-de-la.html" target="_blank" class="article-card" data-title="el concepto de justicia lo largo de la">
+                    <h3>El concepto de justicia lo largo de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/el-concepto-de-la-voluntad-en.html" target="_blank" class="article-card" data-title="el concepto de la voluntad en">
+                    <h3>El concepto de la voluntad en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/el-concepto-de-utopia-en-la-historia.html" target="_blank" class="article-card" data-title="el concepto de utopia en la historia">
+                    <h3>El concepto de utopia en la historia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-conde-de-saint-germain-introduccion.html" target="_blank" class="article-card" data-title="el conde de saint germain introduccion">
+                    <h3>El conde de saint germain introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/el-conflicto-palestino-israeli-un.html" target="_blank" class="article-card" data-title="el conflicto palestino israeli un">
+                    <h3>El conflicto palestino israeli un</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/el-cronovisor-una-maquina-para-ver-el.html" target="_blank" class="article-card" data-title="el cronovisor una maquina para ver el">
+                    <h3>El cronovisor una maquina para ver el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-desplazamiento-de-polos-geograficos.html" target="_blank" class="article-card" data-title="el desplazamiento de polos geograficos">
+                    <h3>El desplazamiento de polos geograficos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/el-destino-de-los-atlantes-y-la-mito.html" target="_blank" class="article-card" data-title="el destino de los atlantes y la mito">
+                    <h3>El destino de los atlantes y la mito</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/el-dia-24-partitocracia-la-falsa.html" target="_blank" class="article-card" data-title="el dia 24 partitocracia la falsa">
+                    <h3>El dia 24 partitocracia la falsa</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/el-dilema-del-tranvia-y-la-etica-de-la.html" target="_blank" class="article-card" data-title="el dilema del tranvia y la etica de la">
+                    <h3>El dilema del tranvia y la etica de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/el-dinero-una-invencion-que-cambio-el.html" target="_blank" class="article-card" data-title="el dinero una invencion que cambio el">
+                    <h3>El dinero una invencion que cambio el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/el-efecto-invernadero-causas.html" target="_blank" class="article-card" data-title="el efecto invernadero causas">
+                    <h3>El efecto invernadero causas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-enigma-de-la-biblioteca-de.html" target="_blank" class="article-card" data-title="el enigma de la biblioteca de">
+                    <h3>El enigma de la biblioteca de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/el-enigma-de-la-desaparicion-de-un.html" target="_blank" class="article-card" data-title="el enigma de la desaparicion de un">
+                    <h3>El enigma de la desaparicion de un</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/el-enigma-de-las-puertas-estelares.html" target="_blank" class="article-card" data-title="el enigma de las puertas estelares">
+                    <h3>El enigma de las puertas estelares</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/el-enigma-de-los-puntos-frios-en-el.html" target="_blank" class="article-card" data-title="el enigma de los puntos frios en el">
+                    <h3>El enigma de los puntos frios en el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/el-enigma-de-los-sonidos-inexplicables.html" target="_blank" class="article-card" data-title="el enigma de los sonidos inexplicables">
+                    <h3>El enigma de los sonidos inexplicables</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-epicureismo-y-la-busqueda-de-la.html" target="_blank" class="article-card" data-title="el epicureismo y la busqueda de la">
+                    <h3>El epicureismo y la busqueda de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-estado-segun-los-liberales-con-foco.html" target="_blank" class="article-card" data-title="el estado segun los liberales con foco">
+                    <h3>El estado segun los liberales con foco</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/el-estado-y-los-impuestos-curva-de.html" target="_blank" class="article-card" data-title="el estado y los impuestos curva de">
+                    <h3>El estado y los impuestos curva de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/el-estilo-de-la-politica-en-espana.html" target="_blank" class="article-card" data-title="el estilo de la politica en espana">
+                    <h3>El estilo de la politica en espana</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/el-fenomeno-del-deja-vu-un-enigma.html" target="_blank" class="article-card" data-title="el fenomeno del deja vu un enigma">
+                    <h3>El fenomeno del deja vu un enigma</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-fenomeno-ovniuap-y-la-clasificacion.html" target="_blank" class="article-card" data-title="el fenomeno ovniuap y la clasificacion">
+                    <h3>El fenomeno ovniuap y la clasificacion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-futuro-de-la-ciberguerra-asimetrica.html" target="_blank" class="article-card" data-title="el futuro de la ciberguerra asimetrica">
+                    <h3>El futuro de la ciberguerra asimetrica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-futuro-sin-fronteras-materiales.html" target="_blank" class="article-card" data-title="el futuro sin fronteras materiales">
+                    <h3>El futuro sin fronteras materiales</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/el-globalismo-origenes-caracteristicas.html" target="_blank" class="article-card" data-title="el globalismo origenes caracteristicas">
+                    <h3>El globalismo origenes caracteristicas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/el-hexagono-polar-de-saturno-por-que.html" target="_blank" class="article-card" data-title="el hexagono polar de saturno por que">
+                    <h3>El hexagono polar de saturno por que</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/el-hielo-que-arde-hidratos-de-metano-y.html" target="_blank" class="article-card" data-title="el hielo que arde hidratos de metano y">
+                    <h3>El hielo que arde hidratos de metano y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-imperio-jazaro-la-historia-de-un.html" target="_blank" class="article-card" data-title="el imperio jazaro la historia de un">
+                    <h3>El imperio jazaro la historia de un</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-imperio-zulu-introduccion-el-imperio.html" target="_blank" class="article-card" data-title="el imperio zulu introduccion el imperio">
+                    <h3>El imperio zulu introduccion el imperio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/el-lago-vostok-introduccion-oculto-bajo.html" target="_blank" class="article-card" data-title="el lago vostok introduccion oculto bajo">
+                    <h3>El lago vostok introduccion oculto bajo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/el-laser-como-herramienta-de.html" target="_blank" class="article-card" data-title="el laser como herramienta de">
+                    <h3>El laser como herramienta de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/el-lenguaje-como-tecnologia-original.html" target="_blank" class="article-card" data-title="el lenguaje como tecnologia original">
+                    <h3>El lenguaje como tecnologia original</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/el-lenguaje-inclusivo-pensamiento.html" target="_blank" class="article-card" data-title="el lenguaje inclusivo pensamiento">
+                    <h3>El lenguaje inclusivo pensamiento</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/el-lenguaje-politico-quiero-que-os.html" target="_blank" class="article-card" data-title="el lenguaje politico quiero que os">
+                    <h3>El lenguaje politico quiero que os</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-mapa-de-urbano-monte-introduccion-en.html" target="_blank" class="article-card" data-title="el mapa de urbano monte introduccion en">
+                    <h3>El mapa de urbano monte introduccion en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/el-metaverso-la-nueva-frontera-de-lo.html" target="_blank" class="article-card" data-title="el metaverso la nueva frontera de lo">
+                    <h3>El metaverso la nueva frontera de lo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/el-microbioma-humano-y-su-relacion-con.html" target="_blank" class="article-card" data-title="el microbioma humano y su relacion con">
+                    <h3>El microbioma humano y su relacion con</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/el-milagro-de-la-inmortalidad-la-hidra.html" target="_blank" class="article-card" data-title="el milagro de la inmortalidad la hidra">
+                    <h3>El milagro de la inmortalidad la hidra</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/el-misterio-de-la-biblioteca-de.html" target="_blank" class="article-card" data-title="el misterio de la biblioteca de">
+                    <h3>El misterio de la biblioteca de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/el-mito-de-shangri-la-introduccion.html" target="_blank" class="article-card" data-title="el mito de shangri la introduccion">
+                    <h3>El mito de shangri la introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-monte-kailash-introduccion-hay.html" target="_blank" class="article-card" data-title="el monte kailash introduccion hay">
+                    <h3>El monte kailash introduccion hay</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-mundo-de-las-hormigas-introduccion.html" target="_blank" class="article-card" data-title="el mundo de las hormigas introduccion">
+                    <h3>El mundo de las hormigas introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/el-mundo-de-los-tejidos-1.html" target="_blank" class="article-card" data-title="el mundo de los tejidos 1">
+                    <h3>El mundo de los tejidos 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/el-mundo-que-viene-el-futuro-proximo-1.html" target="_blank" class="article-card" data-title="el mundo que viene el futuro proximo 1">
+                    <h3>El mundo que viene el futuro proximo 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-muro-de-berlin-auge-y-caida.html" target="_blank" class="article-card" data-title="el muro de berlin auge y caida">
+                    <h3>El muro de berlin auge y caida</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/el-oceano-subglacial-de-europa-posible.html" target="_blank" class="article-card" data-title="el oceano subglacial de europa posible">
+                    <h3>El oceano subglacial de europa posible</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/el-origen-de-la-vida-parte-i-el-origen.html" target="_blank" class="article-card" data-title="el origen de la vida parte i el origen">
+                    <h3>El origen de la vida parte i el origen</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/el-origen-de-los-mitos-sobre-criaturas.html" target="_blank" class="article-card" data-title="el origen de los mitos sobre criaturas">
+                    <h3>El origen de los mitos sobre criaturas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/el-origen-de-los-numeros-primos-y-su.html" target="_blank" class="article-card" data-title="el origen de los numeros primos y su">
+                    <h3>El origen de los numeros primos y su</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-pajaro-de-saqqara-introduccion.html" target="_blank" class="article-card" data-title="el pajaro de saqqara introduccion">
+                    <h3>El pajaro de saqqara introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/el-papel-de-la-mujer-en-la-historia-de.html" target="_blank" class="article-card" data-title="el papel de la mujer en la historia de">
+                    <h3>El papel de la mujer en la historia de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/el-papel-de-los-espias-en-la-guerra.html" target="_blank" class="article-card" data-title="el papel de los espias en la guerra">
+                    <h3>El papel de los espias en la guerra</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/el-pensamiento-como-fenomeno-fisico.html" target="_blank" class="article-card" data-title="el pensamiento como fenomeno fisico">
+                    <h3>El pensamiento como fenomeno fisico</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/el-periodismo-actuales-1.html" target="_blank" class="article-card" data-title="el periodismo actuales 1">
+                    <h3>El periodismo actuales 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/el-problema-de-la-falta-de-vivienda-una.html" target="_blank" class="article-card" data-title="el problema de la falta de vivienda una">
+                    <h3>El problema de la falta de vivienda una</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-relampago-oscuro-descargas.html" target="_blank" class="article-card" data-title="el relampago oscuro descargas">
+                    <h3>El relampago oscuro descargas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/el-riesgo-de-super-volcanes.html" target="_blank" class="article-card" data-title="el riesgo de super volcanes">
+                    <h3>El riesgo de super volcanes</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/el-rol-de-los-influencers-en-las.html" target="_blank" class="article-card" data-title="el rol de los influencers en las">
+                    <h3>El rol de los influencers en las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/el-secuestro-de-la-democracia-por-los.html" target="_blank" class="article-card" data-title="el secuestro de la democracia por los">
+                    <h3>El secuestro de la democracia por los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-templo-del-sol-en-sacsayhuaman.html" target="_blank" class="article-card" data-title="el templo del sol en sacsayhuaman">
+                    <h3>El templo del sol en sacsayhuaman</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/el-templo-padmanabhaswamy-la-boveda-b.html" target="_blank" class="article-card" data-title="el templo padmanabhaswamy la boveda b">
+                    <h3>El templo padmanabhaswamy la boveda b</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/el-tercer-ojo-de-lobsang-rampa-una.html" target="_blank" class="article-card" data-title="el tercer ojo de lobsang rampa una">
+                    <h3>El tercer ojo de lobsang rampa una</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/el-tiburon-boreal-introduccion-en-las.html" target="_blank" class="article-card" data-title="el tiburon boreal introduccion en las">
+                    <h3>El tiburon boreal introduccion en las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/el-tiempo-como-invencion-cultural.html" target="_blank" class="article-card" data-title="el tiempo como invencion cultural">
+                    <h3>El tiempo como invencion cultural</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/el-tiempo-la-cuarta-dimension-viajes-en.html" target="_blank" class="article-card" data-title="el tiempo la cuarta dimension viajes en">
+                    <h3>El tiempo la cuarta dimension viajes en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/el-transhumanismo-y-la-busqueda-de-la.html" target="_blank" class="article-card" data-title="el transhumanismo y la busqueda de la">
+                    <h3>El transhumanismo y la busqueda de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/el-triangulo-de-las-bermudas-misterio.html" target="_blank" class="article-card" data-title="el triangulo de las bermudas misterio">
+                    <h3>El triangulo de las bermudas misterio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-universo-como-sistema-de-informacion.html" target="_blank" class="article-card" data-title="el universo como sistema de informacion">
+                    <h3>El universo como sistema de informacion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/el-universo-simulado-una-realidad.html" target="_blank" class="article-card" data-title="el universo simulado una realidad">
+                    <h3>El universo simulado una realidad</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/el-vacio-cuantico-como-generador-de.html" target="_blank" class="article-card" data-title="el vacio cuantico como generador de">
+                    <h3>El vacio cuantico como generador de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/electromagnetismo-parte-i-introduccion.html" target="_blank" class="article-card" data-title="electromagnetismo parte i introduccion">
+                    <h3>Electromagnetismo parte i introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/electromagnetismo-parte-ii-el.html" target="_blank" class="article-card" data-title="electromagnetismo parte ii el">
+                    <h3>Electromagnetismo parte ii el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/elites-politicas-la-manipulacion-de-la.html" target="_blank" class="article-card" data-title="elites politicas la manipulacion de la">
+                    <h3>Elites politicas la manipulacion de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/energia-atomica-analisis-integral-sobre.html" target="_blank" class="article-card" data-title="energia atomica analisis integral sobre">
+                    <h3>Energia atomica analisis integral sobre</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/energia-oscura-explicacion-breve.html" target="_blank" class="article-card" data-title="energia oscura explicacion breve">
+                    <h3>Energia oscura explicacion breve</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/enoc-y-melquisedec-misteriosos-en-los.html" target="_blank" class="article-card" data-title="enoc y melquisedec misteriosos en los">
+                    <h3>Enoc y melquisedec misteriosos en los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/entrelazamiento-cuantico-un-fenomeno.html" target="_blank" class="article-card" data-title="entrelazamiento cuantico un fenomeno">
+                    <h3>Entrelazamiento cuantico un fenomeno</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/estados-de-la-materia-introduccion-el.html" target="_blank" class="article-card" data-title="estados de la materia introduccion el">
+                    <h3>Estados de la materia introduccion el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/etica-algoritmia-y-libre-albedrio.html" target="_blank" class="article-card" data-title="etica algoritmia y libre albedrio">
+                    <h3>Etica algoritmia y libre albedrio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/etica-algoritmica-y-el-libre-albedrio.html" target="_blank" class="article-card" data-title="etica algoritmica y el libre albedrio">
+                    <h3>Etica algoritmica y el libre albedrio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/euro-digital-introduccion-la.html" target="_blank" class="article-card" data-title="euro digital introduccion la">
+                    <h3>Euro digital introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/evaluacion-del-ciclo-de-vida-de.html" target="_blank" class="article-card" data-title="evaluacion del ciclo de vida de">
+                    <h3>Evaluacion del ciclo de vida de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/exoplanetas-busqueda-de-vida.html" target="_blank" class="article-card" data-title="exoplanetas busqueda de vida">
+                    <h3>Exoplanetas busqueda de vida</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/exorcismos-una-aproximacion-desde-la.html" target="_blank" class="article-card" data-title="exorcismos una aproximacion desde la">
+                    <h3>Exorcismos una aproximacion desde la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/exploracion-espacial-parte-i.html" target="_blank" class="article-card" data-title="exploracion espacial parte i">
+                    <h3>Exploracion espacial parte i</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/exploracion-espacial-parte-ii-impacto.html" target="_blank" class="article-card" data-title="exploracion espacial parte ii impacto">
+                    <h3>Exploracion espacial parte ii impacto</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/exploracion-espacial-parte-iii-el-papel.html" target="_blank" class="article-card" data-title="exploracion espacial parte iii el papel">
+                    <h3>Exploracion espacial parte iii el papel</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/exploracion-espacial-y-colonizacion-de.html" target="_blank" class="article-card" data-title="exploracion espacial y colonizacion de">
+                    <h3>Exploracion espacial y colonizacion de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/fantasmas-introduccion-los-fantasmas.html" target="_blank" class="article-card" data-title="fantasmas introduccion los fantasmas">
+                    <h3>Fantasmas introduccion los fantasmas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/fascismo-y-socialismo-primos-hermanos.html" target="_blank" class="article-card" data-title="fascismo y socialismo primos hermanos">
+                    <h3>Fascismo y socialismo primos hermanos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/feminismo-actual-o-de-tercera-ola.html" target="_blank" class="article-card" data-title="feminismo actual o de tercera ola">
+                    <h3>Feminismo actual o de tercera ola</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/fenomenos-naturales-que-parecen-magicos.html" target="_blank" class="article-card" data-title="fenomenos naturales que parecen magicos">
+                    <h3>Fenomenos naturales que parecen magicos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/filosofia-oriental-vs.html" target="_blank" class="article-card" data-title="filosofia oriental vs">
+                    <h3>Filosofia oriental vs</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/fisica-cuantica-continuacion.html" target="_blank" class="article-card" data-title="fisica cuantica continuacion">
+                    <h3>Fisica cuantica continuacion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/fision-nuclear-introduccion-la-fision.html" target="_blank" class="article-card" data-title="fision nuclear introduccion la fision">
+                    <h3>Fision nuclear introduccion la fision</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/fobos-la-luna-de-marte-que-desafia-la.html" target="_blank" class="article-card" data-title="fobos la luna de marte que desafia la">
+                    <h3>Fobos la luna de marte que desafia la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/fosa-de-las-marianas-introduccion-la.html" target="_blank" class="article-card" data-title="fosa de las marianas introduccion la">
+                    <h3>Fosa de las marianas introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/fotonica-para-computacion-chips.html" target="_blank" class="article-card" data-title="fotonica para computacion chips">
+                    <h3>Fotonica para computacion chips</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/friedrich-hayek-y-su-pensamiento-parte.html" target="_blank" class="article-card" data-title="friedrich hayek y su pensamiento parte">
+                    <h3>Friedrich hayek y su pensamiento parte</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/friedrich-hayek-y-su-pensamiento-parte_6.html" target="_blank" class="article-card" data-title="friedrich hayek y su pensamiento parte 6">
+                    <h3>Friedrich hayek y su pensamiento parte 6</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/fuego-griego-introduccion-entre-los.html" target="_blank" class="article-card" data-title="fuego griego introduccion entre los">
+                    <h3>Fuego griego introduccion entre los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/fusion-entre-mente-biologica-y.html" target="_blank" class="article-card" data-title="fusion entre mente biologica y">
+                    <h3>Fusion entre mente biologica y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/fusion-nuclear-introduccion-la-fusion.html" target="_blank" class="article-card" data-title="fusion nuclear introduccion la fusion">
+                    <h3>Fusion nuclear introduccion la fusion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/galaxias-introduccion-arquitectas-del.html" target="_blank" class="article-card" data-title="galaxias introduccion arquitectas del">
+                    <h3>Galaxias introduccion arquitectas del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/generadores-atmosfericos-de-agua.html" target="_blank" class="article-card" data-title="generadores atmosfericos de agua">
+                    <h3>Generadores atmosfericos de agua</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/genetica-y-la-posibilidad-de-disenar.html" target="_blank" class="article-card" data-title="genetica y la posibilidad de disenar">
+                    <h3>Genetica y la posibilidad de disenar</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/gestion-de-catastrofes-reflexiones-y.html" target="_blank" class="article-card" data-title="gestion de catastrofes reflexiones y">
+                    <h3>Gestion de catastrofes reflexiones y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/globalismo-ingenieria-social-y-control.html" target="_blank" class="article-card" data-title="globalismo ingenieria social y control">
+                    <h3>Globalismo ingenieria social y control</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/gobekli-tepe-el-sitio-arqueologico-que.html" target="_blank" class="article-card" data-title="gobekli tepe el sitio arqueologico que">
+                    <h3>Gobekli tepe el sitio arqueologico que</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/guerras-civiles-parte-i-introduccion-la.html" target="_blank" class="article-card" data-title="guerras civiles parte i introduccion la">
+                    <h3>Guerras civiles parte i introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/hernan-cortes-introduccion-hernan.html" target="_blank" class="article-card" data-title="hernan cortes introduccion hernan">
+                    <h3>Hernan cortes introduccion hernan</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/historia-de-una-cancion-libre-nino.html" target="_blank" class="article-card" data-title="historia de una cancion libre nino">
+                    <h3>Historia de una cancion libre nino</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/incidente-del-paso-dyatlov-introduccion.html" target="_blank" class="article-card" data-title="incidente del paso dyatlov introduccion">
+                    <h3>Incidente del paso dyatlov introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/industria-4.html" target="_blank" class="article-card" data-title="industria 4">
+                    <h3>Industria 4</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/inteligencia-artificial-e-industria.html" target="_blank" class="article-card" data-title="inteligencia artificial e industria">
+                    <h3>Inteligencia artificial e industria</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/introduccion-en-octubre-de-2017-un.html" target="_blank" class="article-card" data-title="introduccion en octubre de 2017 un">
+                    <h3>Introduccion en octubre de 2017 un</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/introduccion-historica-al-racismo-el.html" target="_blank" class="article-card" data-title="introduccion historica al racismo el">
+                    <h3>Introduccion historica al racismo el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/introduccion-la-computacion-cuantica.html" target="_blank" class="article-card" data-title="introduccion la computacion cuantica">
+                    <h3>Introduccion la computacion cuantica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/introduccion-la-inteligencia-artificial.html" target="_blank" class="article-card" data-title="introduccion la inteligencia artificial">
+                    <h3>Introduccion la inteligencia artificial</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/introduccion-los-agujeros-negros-son.html" target="_blank" class="article-card" data-title="introduccion los agujeros negros son">
+                    <h3>Introduccion los agujeros negros son</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/isaac-newton-introduccion-la-figura-de.html" target="_blank" class="article-card" data-title="isaac newton introduccion la figura de">
+                    <h3>Isaac newton introduccion la figura de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/justicia-social-primera-parte-presion.html" target="_blank" class="article-card" data-title="justicia social primera parte presion">
+                    <h3>Justicia social primera parte presion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-anomalia-de-la-via-lactea.html" target="_blank" class="article-card" data-title="la anomalia de la via lactea">
+                    <h3>La anomalia de la via lactea</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-anomalia-del-polo-sur-region-donde.html" target="_blank" class="article-card" data-title="la anomalia del polo sur region donde">
+                    <h3>La anomalia del polo sur region donde</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/la-antartida-el-continente-helado.html" target="_blank" class="article-card" data-title="la antartida el continente helado">
+                    <h3>La antartida el continente helado</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-antropologia-de-los-mitos-de-la.html" target="_blank" class="article-card" data-title="la antropologia de los mitos de la">
+                    <h3>La antropologia de los mitos de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/la-asistencia-sanitaria-un-derecho.html" target="_blank" class="article-card" data-title="la asistencia sanitaria un derecho">
+                    <h3>La asistencia sanitaria un derecho</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/la-atlantida-mito-historia-y-ciencia.html" target="_blank" class="article-card" data-title="la atlantida mito historia y ciencia">
+                    <h3>La atlantida mito historia y ciencia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-atlantida-tecnologia-los-mitos-de.html" target="_blank" class="article-card" data-title="la atlantida tecnologia los mitos de">
+                    <h3>La atlantida tecnologia los mitos de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/la-bateria-de-bagdad-entre-la-ciencia.html" target="_blank" class="article-card" data-title="la bateria de bagdad entre la ciencia">
+                    <h3>La bateria de bagdad entre la ciencia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-bilogia-sintetica-y-los.html" target="_blank" class="article-card" data-title="la bilogia sintetica y los">
+                    <h3>La bilogia sintetica y los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-bioingenieria-y-sus-dilem.html" target="_blank" class="article-card" data-title="la bioingenieria y sus dilem">
+                    <h3>La bioingenieria y sus dilem</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-caida-de-constantinopla-y-sus.html" target="_blank" class="article-card" data-title="la caida de constantinopla y sus">
+                    <h3>La caida de constantinopla y sus</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-carrera-por-el-artico-geopolitica-de.html" target="_blank" class="article-card" data-title="la carrera por el artico geopolitica de">
+                    <h3>La carrera por el artico geopolitica de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-censura-como-herramienta-de-control.html" target="_blank" class="article-card" data-title="la censura como herramienta de control">
+                    <h3>La censura como herramienta de control</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-censura-y-su-impacto-en-la.html" target="_blank" class="article-card" data-title="la censura y su impacto en la">
+                    <h3>La censura y su impacto en la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-ciudad-perdida-de-z-un-supuesto.html" target="_blank" class="article-card" data-title="la ciudad perdida de z un supuesto">
+                    <h3>La ciudad perdida de z un supuesto</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/la-ciudad-submarina-de-yonaguni-en.html" target="_blank" class="article-card" data-title="la ciudad submarina de yonaguni en">
+                    <h3>La ciudad submarina de yonaguni en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/la-ciudad-submarina-de-yonaguni-en_27.html" target="_blank" class="article-card" data-title="la ciudad submarina de yonaguni en 27">
+                    <h3>La ciudad submarina de yonaguni en 27</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/la-comunicacion-de-las-abejas-desde-una.html" target="_blank" class="article-card" data-title="la comunicacion de las abejas desde una">
+                    <h3>La comunicacion de las abejas desde una</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-comunicacion-en-los-delfines.html" target="_blank" class="article-card" data-title="la comunicacion en los delfines">
+                    <h3>La comunicacion en los delfines</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-conciencia-distribuida-y-los-limites.html" target="_blank" class="article-card" data-title="la conciencia distribuida y los limites">
+                    <h3>La conciencia distribuida y los limites</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-conexion-entre-la-neurociencia-y-la.html" target="_blank" class="article-card" data-title="la conexion entre la neurociencia y la">
+                    <h3>La conexion entre la neurociencia y la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-consciencia-distribuida-introduccion.html" target="_blank" class="article-card" data-title="la consciencia distribuida introduccion">
+                    <h3>La consciencia distribuida introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-corriente-del-golfo-introduccion-la.html" target="_blank" class="article-card" data-title="la corriente del golfo introduccion la">
+                    <h3>La corriente del golfo introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-corrupcion-politica-lo-largo-de-la.html" target="_blank" class="article-card" data-title="la corrupcion politica lo largo de la">
+                    <h3>La corrupcion politica lo largo de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-criptozoologia-un-analisis.html" target="_blank" class="article-card" data-title="la criptozoologia un analisis">
+                    <h3>La criptozoologia un analisis</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-cultura-del-cancelamiento-desde-una.html" target="_blank" class="article-card" data-title="la cultura del cancelamiento desde una">
+                    <h3>La cultura del cancelamiento desde una</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-descentralizacion-de-la-gobernanza.html" target="_blank" class="article-card" data-title="la descentralizacion de la gobernanza">
+                    <h3>La descentralizacion de la gobernanza</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-doble-helice-de-adn-antes-de-su.html" target="_blank" class="article-card" data-title="la doble helice de adn antes de su">
+                    <h3>La doble helice de adn antes de su</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-era-de-la-biologia-sintetica.html" target="_blank" class="article-card" data-title="la era de la biologia sintetica">
+                    <h3>La era de la biologia sintetica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-escalera-infinita-de-santa-fe-la.html" target="_blank" class="article-card" data-title="la escalera infinita de santa fe la">
+                    <h3>La escalera infinita de santa fe la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-estrella-de-tabby-esconde-una.html" target="_blank" class="article-card" data-title="la estrella de tabby esconde una">
+                    <h3>La estrella de tabby esconde una</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/la-evolucion-de-la-inteligencia.html" target="_blank" class="article-card" data-title="la evolucion de la inteligencia">
+                    <h3>La evolucion de la inteligencia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-evolucion-de-la-musica-como-protesta.html" target="_blank" class="article-card" data-title="la evolucion de la musica como protesta">
+                    <h3>La evolucion de la musica como protesta</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-evolucion-de-los-materiales.html" target="_blank" class="article-card" data-title="la evolucion de los materiales">
+                    <h3>La evolucion de los materiales</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-evolucion-de-los-sistemas-de.html" target="_blank" class="article-card" data-title="la evolucion de los sistemas de">
+                    <h3>La evolucion de los sistemas de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-evolucion-humana-descubrimientos.html" target="_blank" class="article-card" data-title="la evolucion humana descubrimientos">
+                    <h3>La evolucion humana descubrimientos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-evolucion-y-la-biologia-de-especies.html" target="_blank" class="article-card" data-title="la evolucion y la biologia de especies">
+                    <h3>La evolucion y la biologia de especies</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-existencia-de-civilizaciones.html" target="_blank" class="article-card" data-title="la existencia de civilizaciones">
+                    <h3>La existencia de civilizaciones</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/la-fisica-cuantica-que-es-como-nos.html" target="_blank" class="article-card" data-title="la fisica cuantica que es como nos">
+                    <h3>La fisica cuantica que es como nos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-fisica-de-los-estados-de-la-materia.html" target="_blank" class="article-card" data-title="la fisica de los estados de la materia">
+                    <h3>La fisica de los estados de la materia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-fisica-de-los-viajes-en-el-tiempo-es.html" target="_blank" class="article-card" data-title="la fisica de los viajes en el tiempo es">
+                    <h3>La fisica de los viajes en el tiempo es</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/la-generacion-idiota-un-analisis.html" target="_blank" class="article-card" data-title="la generacion idiota un analisis">
+                    <h3>La generacion idiota un analisis</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-genetica-de-la-longevidad-podremos.html" target="_blank" class="article-card" data-title="la genetica de la longevidad podremos">
+                    <h3>La genetica de la longevidad podremos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-geopolitica-de-los-datos-quien.html" target="_blank" class="article-card" data-title="la geopolitica de los datos quien">
+                    <h3>La geopolitica de los datos quien</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-geopolitica-del-agua-y-los.html" target="_blank" class="article-card" data-title="la geopolitica del agua y los">
+                    <h3>La geopolitica del agua y los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-gran-esfinge-de-giza-introduccion-la.html" target="_blank" class="article-card" data-title="la gran esfinge de giza introduccion la">
+                    <h3>La gran esfinge de giza introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-gran-hambruna-de-1315-1317-el.html" target="_blank" class="article-card" data-title="la gran hambruna de 1315 1317 el">
+                    <h3>La gran hambruna de 1315 1317 el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-gran-piramide-de-guiza-misterios.html" target="_blank" class="article-card" data-title="la gran piramide de guiza misterios">
+                    <h3>La gran piramide de guiza misterios</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-hipotesis-de-gaia-la-tierra-como.html" target="_blank" class="article-card" data-title="la hipotesis de gaia la tierra como">
+                    <h3>La hipotesis de gaia la tierra como</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-hipotesis-del-cataclismo-de-dryas.html" target="_blank" class="article-card" data-title="la hipotesis del cataclismo de dryas">
+                    <h3>La hipotesis del cataclismo de dryas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-historia-de-la-computacion-cuantica.html" target="_blank" class="article-card" data-title="la historia de la computacion cuantica">
+                    <h3>La historia de la computacion cuantica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-historia-de-las-epidemias-y-su.html" target="_blank" class="article-card" data-title="la historia de las epidemias y su">
+                    <h3>La historia de las epidemias y su</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-historia-de-los-alquimistas-y-su.html" target="_blank" class="article-card" data-title="la historia de los alquimistas y su">
+                    <h3>La historia de los alquimistas y su</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-historia-de-los-gladiadores-en-la.html" target="_blank" class="article-card" data-title="la historia de los gladiadores en la">
+                    <h3>La historia de los gladiadores en la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-historia-de-los-mercenarios-en.html" target="_blank" class="article-card" data-title="la historia de los mercenarios en">
+                    <h3>La historia de los mercenarios en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-historia-del-descubrimiento-del-adn.html" target="_blank" class="article-card" data-title="la historia del descubrimiento del adn">
+                    <h3>La historia del descubrimiento del adn</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-historia-oculta-detras-de-las.html" target="_blank" class="article-card" data-title="la historia oculta detras de las">
+                    <h3>La historia oculta detras de las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-influencia-de-la-propaganda-en-la.html" target="_blank" class="article-card" data-title="la influencia de la propaganda en la">
+                    <h3>La influencia de la propaganda en la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-influencia-de-la-revolucion-francesa.html" target="_blank" class="article-card" data-title="la influencia de la revolucion francesa">
+                    <h3>La influencia de la revolucion francesa</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-influencia-de-nietzsche-en-la.html" target="_blank" class="article-card" data-title="la influencia de nietzsche en la">
+                    <h3>La influencia de nietzsche en la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/la-influencia-del-populismo-en-las.html" target="_blank" class="article-card" data-title="la influencia del populismo en las">
+                    <h3>La influencia del populismo en las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/la-inteligencia-artificial-en-la.html" target="_blank" class="article-card" data-title="la inteligencia artificial en la">
+                    <h3>La inteligencia artificial en la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/la-inteligencia-artificial-ia-y-el.html" target="_blank" class="article-card" data-title="la inteligencia artificial ia y el">
+                    <h3>La inteligencia artificial ia y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/la-justicia-social-segunda-parte.html" target="_blank" class="article-card" data-title="la justicia social segunda parte">
+                    <h3>La justicia social segunda parte</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/la-legion-perdida-introduccion-la.html" target="_blank" class="article-card" data-title="la legion perdida introduccion la">
+                    <h3>La legion perdida introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-leyenda-negra-de-la-conquista-de.html" target="_blank" class="article-card" data-title="la leyenda negra de la conquista de">
+                    <h3>La leyenda negra de la conquista de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-leyenda-negra-de-la-conquista-de_8.html" target="_blank" class="article-card" data-title="la leyenda negra de la conquista de 8">
+                    <h3>La leyenda negra de la conquista de 8</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-manipulacion-por-deepfakes.html" target="_blank" class="article-card" data-title="la manipulacion por deepfakes">
+                    <h3>La manipulacion por deepfakes</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-maquina-de-anticitera-y-el.html" target="_blank" class="article-card" data-title="la maquina de anticitera y el">
+                    <h3>La maquina de anticitera y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-materia-oscura-y-su-influencia.html" target="_blank" class="article-card" data-title="la materia oscura y su influencia">
+                    <h3>La materia oscura y su influencia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-mecanica-cuantica-el-mundo-extrano.html" target="_blank" class="article-card" data-title="la mecanica cuantica el mundo extrano">
+                    <h3>La mecanica cuantica el mundo extrano</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-mitologia-del-diluvio-universal.html" target="_blank" class="article-card" data-title="la mitologia del diluvio universal">
+                    <h3>La mitologia del diluvio universal</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-neurociencia-de-los-suenos-por-que.html" target="_blank" class="article-card" data-title="la neurociencia de los suenos por que">
+                    <h3>La neurociencia de los suenos por que</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/la-nueva-izquierda-como-ha-afectado-su.html" target="_blank" class="article-card" data-title="la nueva izquierda como ha afectado su">
+                    <h3>La nueva izquierda como ha afectado su</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-paradoja-de-fermi-donde-estan-los.html" target="_blank" class="article-card" data-title="la paradoja de fermi donde estan los">
+                    <h3>La paradoja de fermi donde estan los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-paradoja-de-fermi-y-el-gran-silencio.html" target="_blank" class="article-card" data-title="la paradoja de fermi y el gran silencio">
+                    <h3>La paradoja de fermi y el gran silencio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-paradoja-del-tiempo-y-su-impacto-en.html" target="_blank" class="article-card" data-title="la paradoja del tiempo y su impacto en">
+                    <h3>La paradoja del tiempo y su impacto en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-percepcion-como-frontera-del-ser.html" target="_blank" class="article-card" data-title="la percepcion como frontera del ser">
+                    <h3>La percepcion como frontera del ser</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-persistencia-del-fenomeno-pie-grande.html" target="_blank" class="article-card" data-title="la persistencia del fenomeno pie grande">
+                    <h3>La persistencia del fenomeno pie grande</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-posibilidad-de-una-luna-perdida-en.html" target="_blank" class="article-card" data-title="la posibilidad de una luna perdida en">
+                    <h3>La posibilidad de una luna perdida en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-posibilidad-de-vida-en-los-oceanos.html" target="_blank" class="article-card" data-title="la posibilidad de vida en los oceanos">
+                    <h3>La posibilidad de vida en los oceanos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/la-posible-existencia-de-civilizaciones.html" target="_blank" class="article-card" data-title="la posible existencia de civilizaciones">
+                    <h3>La posible existencia de civilizaciones</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-posible-existencia-de-formas-de-vida.html" target="_blank" class="article-card" data-title="la posible existencia de formas de vida">
+                    <h3>La posible existencia de formas de vida</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/la-reconfiguracion-de-la-educacion-por.html" target="_blank" class="article-card" data-title="la reconfiguracion de la educacion por">
+                    <h3>La reconfiguracion de la educacion por</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-revolucion-de-los-superconductores.html" target="_blank" class="article-card" data-title="la revolucion de los superconductores">
+                    <h3>La revolucion de los superconductores</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-revolucion-industrial-y-el.html" target="_blank" class="article-card" data-title="la revolucion industrial y el">
+                    <h3>La revolucion industrial y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-revolucion-rusa-y-el-ascenso-del.html" target="_blank" class="article-card" data-title="la revolucion rusa y el ascenso del">
+                    <h3>La revolucion rusa y el ascenso del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-revolucion-rusa-y-el-ascenso-del.html" target="_blank" class="article-card" data-title="la revolucion rusa y el ascenso del">
+                    <h3>La revolucion rusa y el ascenso del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/la-ruta-de-la-obsidiana-comercio.html" target="_blank" class="article-card" data-title="la ruta de la obsidiana comercio">
+                    <h3>La ruta de la obsidiana comercio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-ruta-de-la-seda-su-impacto-en-el.html" target="_blank" class="article-card" data-title="la ruta de la seda su impacto en el">
+                    <h3>La ruta de la seda su impacto en el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/la-segunda-republica-espanola-y-los.html" target="_blank" class="article-card" data-title="la segunda republica espanola y los">
+                    <h3>La segunda republica espanola y los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-selva-del-amazonas-la-gran.html" target="_blank" class="article-card" data-title="la selva del amazonas la gran">
+                    <h3>La selva del amazonas la gran</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-selva-del-amazonas-la-gran_19.html" target="_blank" class="article-card" data-title="la selva del amazonas la gran 19">
+                    <h3>La selva del amazonas la gran 19</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/la-selva-del-amazonas-la-gran_20.html" target="_blank" class="article-card" data-title="la selva del amazonas la gran 20">
+                    <h3>La selva del amazonas la gran 20</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-tecnologia-li-filuz-fidelidad.html" target="_blank" class="article-card" data-title="la tecnologia li filuz fidelidad">
+                    <h3>La tecnologia li filuz fidelidad</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-teoria-de-la-conciencia-como-una.html" target="_blank" class="article-card" data-title="la teoria de la conciencia como una">
+                    <h3>La teoria de la conciencia como una</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/la-teoria-de-la-relatividad-de-einstein.html" target="_blank" class="article-card" data-title="la teoria de la relatividad de einstein">
+                    <h3>La teoria de la relatividad de einstein</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/la-teoria-de-la-tierra-en-expansion.html" target="_blank" class="article-card" data-title="la teoria de la tierra en expansion">
+                    <h3>La teoria de la tierra en expansion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-teoria-de-los-espejismos-cosmicos-y.html" target="_blank" class="article-card" data-title="la teoria de los espejismos cosmicos y">
+                    <h3>La teoria de los espejismos cosmicos y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/la-teoria-de-los-multiversos-vivimos-en.html" target="_blank" class="article-card" data-title="la teoria de los multiversos vivimos en">
+                    <h3>La teoria de los multiversos vivimos en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/la-teosofia-sabiduria-eterna-para-el.html" target="_blank" class="article-card" data-title="la teosofia sabiduria eterna para el">
+                    <h3>La teosofia sabiduria eterna para el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/la-tierra-hueca-mito-persistente-o.html" target="_blank" class="article-card" data-title="la tierra hueca mito persistente o">
+                    <h3>La tierra hueca mito persistente o</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/la-unidad-entre-el-observador-y-lo.html" target="_blank" class="article-card" data-title="la unidad entre el observador y lo">
+                    <h3>La unidad entre el observador y lo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/la-vida-sin-carbono-introduccion-la.html" target="_blank" class="article-card" data-title="la vida sin carbono introduccion la">
+                    <h3>La vida sin carbono introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/lamas-introduccion-la-figura-del-lama.html" target="_blank" class="article-card" data-title="lamas introduccion la figura del lama">
+                    <h3>Lamas introduccion la figura del lama</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/las-anacondas-biologia-mitos-y.html" target="_blank" class="article-card" data-title="las anacondas biologia mitos y">
+                    <h3>Las anacondas biologia mitos y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/las-anomalias-en-la-estructura-del.html" target="_blank" class="article-card" data-title="las anomalias en la estructura del">
+                    <h3>Las anomalias en la estructura del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/las-anomalias-magneticas-de-la-tierra.html" target="_blank" class="article-card" data-title="las anomalias magneticas de la tierra">
+                    <h3>Las anomalias magneticas de la tierra</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/las-bibliotecas-perdidas-introduccion.html" target="_blank" class="article-card" data-title="las bibliotecas perdidas introduccion">
+                    <h3>Las bibliotecas perdidas introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/las-ciudades-subterraneas-de-capadocia.html" target="_blank" class="article-card" data-title="las ciudades subterraneas de capadocia">
+                    <h3>Las ciudades subterraneas de capadocia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/las-claves-de-la-historia-basado-en-el.html" target="_blank" class="article-card" data-title="las claves de la historia basado en el">
+                    <h3>Las claves de la historia basado en el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/las-desapariciones-misteriosas-en-el.html" target="_blank" class="article-card" data-title="las desapariciones misteriosas en el">
+                    <h3>Las desapariciones misteriosas en el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/las-doctrinas-del-cristianismo-islam-y.html" target="_blank" class="article-card" data-title="las doctrinas del cristianismo islam y">
+                    <h3>Las doctrinas del cristianismo islam y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/las-guerras-olvidadas-de-la-historia.html" target="_blank" class="article-card" data-title="las guerras olvidadas de la historia">
+                    <h3>Las guerras olvidadas de la historia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/las-lenguas-que-murieron-sin-hablarse.html" target="_blank" class="article-card" data-title="las lenguas que murieron sin hablarse">
+                    <h3>Las lenguas que murieron sin hablarse</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/las-momias-de-takarkori-un-enigma-en-el.html" target="_blank" class="article-card" data-title="las momias de takarkori un enigma en el">
+                    <h3>Las momias de takarkori un enigma en el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/las-siete-maravillas-del-mundo-antiguo.html" target="_blank" class="article-card" data-title="las siete maravillas del mundo antiguo">
+                    <h3>Las siete maravillas del mundo antiguo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/las-tuberias-de-baigong-introduccion.html" target="_blank" class="article-card" data-title="las tuberias de baigong introduccion">
+                    <h3>Las tuberias de baigong introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/las-variables-ocultas-de-la-mecanica.html" target="_blank" class="article-card" data-title="las variables ocultas de la mecanica">
+                    <h3>Las variables ocultas de la mecanica</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/liberalismo-pensamiento-y.html" target="_blank" class="article-card" data-title="liberalismo pensamiento y">
+                    <h3>Liberalismo pensamiento y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/lo-politicamente-correcto-1.html" target="_blank" class="article-card" data-title="lo politicamente correcto 1">
+                    <h3>Lo politicamente correcto 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/los-alquimistas-del-siglo-xxi.html" target="_blank" class="article-card" data-title="los alquimistas del siglo xxi">
+                    <h3>Los alquimistas del siglo xxi</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/los-angeles-jerarquias-poderes-y.html" target="_blank" class="article-card" data-title="los angeles jerarquias poderes y">
+                    <h3>Los angeles jerarquias poderes y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/los-avances-en-biotecnologia-y-la.html" target="_blank" class="article-card" data-title="los avances en biotecnologia y la">
+                    <h3>Los avances en biotecnologia y la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/los-avances-recientes-en-la-ingenieria.html" target="_blank" class="article-card" data-title="los avances recientes en la ingenieria">
+                    <h3>Los avances recientes en la ingenieria</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/los-avistamientos-de-estructuras.html" target="_blank" class="article-card" data-title="los avistamientos de estructuras">
+                    <h3>Los avistamientos de estructuras</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/los-bajaus-introduccion-en-las-aguas.html" target="_blank" class="article-card" data-title="los bajaus introduccion en las aguas">
+                    <h3>Los bajaus introduccion en las aguas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/los-berserkers-introduccion-berserkers.html" target="_blank" class="article-card" data-title="los berserkers introduccion berserkers">
+                    <h3>Los berserkers introduccion berserkers</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/los-cataros-los-hombres-buenos.html" target="_blank" class="article-card" data-title="los cataros los hombres buenos">
+                    <h3>Los cataros los hombres buenos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/los-circulos-de-hadas-arte-misterioso.html" target="_blank" class="article-card" data-title="los circulos de hadas arte misterioso">
+                    <h3>Los circulos de hadas arte misterioso</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/los-circulos-en-los-cultivos-fenomeno.html" target="_blank" class="article-card" data-title="los circulos en los cultivos fenomeno">
+                    <h3>Los circulos en los cultivos fenomeno</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/los-conflictos-religiosos-mas.html" target="_blank" class="article-card" data-title="los conflictos religiosos mas">
+                    <h3>Los conflictos religiosos mas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/los-dibujos-de-nazca-introduccion-los.html" target="_blank" class="article-card" data-title="los dibujos de nazca introduccion los">
+                    <h3>Los dibujos de nazca introduccion los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/los-druidas-celtas-guardianes-del.html" target="_blank" class="article-card" data-title="los druidas celtas guardianes del">
+                    <h3>Los druidas celtas guardianes del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/los-hunza-el-pueblo-de-la-eterna.html" target="_blank" class="article-card" data-title="los hunza el pueblo de la eterna">
+                    <h3>Los hunza el pueblo de la eterna</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/los-kalash-introduccion-en-un-rincon.html" target="_blank" class="article-card" data-title="los kalash introduccion en un rincon">
+                    <h3>Los kalash introduccion en un rincon</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/los-lobos-de-chernobil-introduccion-el.html" target="_blank" class="article-card" data-title="los lobos de chernobil introduccion el">
+                    <h3>Los lobos de chernobil introduccion el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/los-misterios-de-la-civilizacion-maya-y.html" target="_blank" class="article-card" data-title="los misterios de la civilizacion maya y">
+                    <h3>Los misterios de la civilizacion maya y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/los-modelos-de-desarrollo-economico-lo.html" target="_blank" class="article-card" data-title="los modelos de desarrollo economico lo">
+                    <h3>Los modelos de desarrollo economico lo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/los-neutrinos-cosmicos-mensajeros-del.html" target="_blank" class="article-card" data-title="los neutrinos cosmicos mensajeros del">
+                    <h3>Los neutrinos cosmicos mensajeros del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/los-petroglifos-de-nevada-son-los.html" target="_blank" class="article-card" data-title="los petroglifos de nevada son los">
+                    <h3>Los petroglifos de nevada son los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/los-secretos-de-la-tumba-de-tutankamon.html" target="_blank" class="article-card" data-title="los secretos de la tumba de tutankamon">
+                    <h3>Los secretos de la tumba de tutankamon</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/los-secretos-de-los-manuscritos-de-nag.html" target="_blank" class="article-card" data-title="los secretos de los manuscritos de nag">
+                    <h3>Los secretos de los manuscritos de nag</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/los-superconductores-de-alta.html" target="_blank" class="article-card" data-title="los superconductores de alta">
+                    <h3>Los superconductores de alta</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/los-supuestos-mapas-antiguos-que.html" target="_blank" class="article-card" data-title="los supuestos mapas antiguos que">
+                    <h3>Los supuestos mapas antiguos que</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/los-textos-sumerios-sobre-visitantes.html" target="_blank" class="article-card" data-title="los textos sumerios sobre visitantes">
+                    <h3>Los textos sumerios sobre visitantes</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/los-vetones-una-cultura-milenaria-en-la.html" target="_blank" class="article-card" data-title="los vetones una cultura milenaria en la">
+                    <h3>Los vetones una cultura milenaria en la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/los-viajes-intergalacticos-y-el.html" target="_blank" class="article-card" data-title="los viajes intergalacticos y el">
+                    <h3>Los viajes intergalacticos y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/machu-picchu-introduccion-machu-picchu.html" target="_blank" class="article-card" data-title="machu picchu introduccion machu picchu">
+                    <h3>Machu picchu introduccion machu picchu</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/maesltron-noruego-introduccion-el.html" target="_blank" class="article-card" data-title="maesltron noruego introduccion el">
+                    <h3>Maesltron noruego introduccion el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/malinche-introduccion-malinche-entre-la.html" target="_blank" class="article-card" data-title="malinche introduccion malinche entre la">
+                    <h3>Malinche introduccion malinche entre la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/manipulacion-en-redes-sociales-1.html" target="_blank" class="article-card" data-title="manipulacion en redes sociales 1">
+                    <h3>Manipulacion en redes sociales 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/manipulacion-en-redes-sociales-y-medios.html" target="_blank" class="article-card" data-title="manipulacion en redes sociales y medios">
+                    <h3>Manipulacion en redes sociales y medios</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/mapas-imposibles-la-cartografia-que.html" target="_blank" class="article-card" data-title="mapas imposibles la cartografia que">
+                    <h3>Mapas imposibles la cartografia que</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/marhuana-desmontando-mitos-parte-ii-5.html" target="_blank" class="article-card" data-title="marhuana desmontando mitos parte ii 5">
+                    <h3>Marhuana desmontando mitos parte ii 5</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/marhuana-desmontando-mitos-parte-iv-13.html" target="_blank" class="article-card" data-title="marhuana desmontando mitos parte iv 13">
+                    <h3>Marhuana desmontando mitos parte iv 13</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/marhuana-desmontando-mitos-parte-v-17.html" target="_blank" class="article-card" data-title="marhuana desmontando mitos parte v 17">
+                    <h3>Marhuana desmontando mitos parte v 17</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/maria-magdalena-entre-la-historia-y-el.html" target="_blank" class="article-card" data-title="maria magdalena entre la historia y el">
+                    <h3>Maria magdalena entre la historia y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/maria-pacheco-la-leona-de-castilla.html" target="_blank" class="article-card" data-title="maria pacheco la leona de castilla">
+                    <h3>Maria pacheco la leona de castilla</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/mariposas-monarca-introduccion-la.html" target="_blank" class="article-card" data-title="mariposas monarca introduccion la">
+                    <h3>Mariposas monarca introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/materia-oscura-el-gran-enigma-del.html" target="_blank" class="article-card" data-title="materia oscura el gran enigma del">
+                    <h3>Materia oscura el gran enigma del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/materiales-autorreparables-introduccion.html" target="_blank" class="article-card" data-title="materiales autorreparables introduccion">
+                    <h3>Materiales autorreparables introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/mecanica-cuantica-en-sistemas.html" target="_blank" class="article-card" data-title="mecanica cuantica en sistemas">
+                    <h3>Mecanica cuantica en sistemas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/mecanismo-de-antikythera-introduccion.html" target="_blank" class="article-card" data-title="mecanismo de antikythera introduccion">
+                    <h3>Mecanismo de antikythera introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/medusas-introduccion-las-medusas.html" target="_blank" class="article-card" data-title="medusas introduccion las medusas">
+                    <h3>Medusas introduccion las medusas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/metafisica-del-dato-el-conocimiento.html" target="_blank" class="article-card" data-title="metafisica del dato el conocimiento">
+                    <h3>Metafisica del dato el conocimiento</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/06/metamateriales-para-invisibilidad.html" target="_blank" class="article-card" data-title="metamateriales para invisibilidad">
+                    <h3>Metamateriales para invisibilidad</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/metatron-el-arcangel-mas-poderoso.html" target="_blank" class="article-card" data-title="metatron el arcangel mas poderoso">
+                    <h3>Metatron el arcangel mas poderoso</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/mi-vision-del-estado-actual-y-cual-es.html" target="_blank" class="article-card" data-title="mi vision del estado actual y cual es">
+                    <h3>Mi vision del estado actual y cual es</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/mineria-de-datos-introduccion-el-poder.html" target="_blank" class="article-card" data-title="mineria de datos introduccion el poder">
+                    <h3>Mineria de datos introduccion el poder</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/minicentrales-nucleares-smrs-modulares.html" target="_blank" class="article-card" data-title="minicentrales nucleares smrs modulares">
+                    <h3>Minicentrales nucleares smrs modulares</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/mitologia-wikinga-introduccion-los.html" target="_blank" class="article-card" data-title="mitologia wikinga introduccion los">
+                    <h3>Mitologia wikinga introduccion los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/modo-practico-de-utilizar-la.html" target="_blank" class="article-card" data-title="modo practico de utilizar la">
+                    <h3>Modo practico de utilizar la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/mofs-introduccion-arquitectos.html" target="_blank" class="article-card" data-title="mofs introduccion arquitectos">
+                    <h3>Mofs introduccion arquitectos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/muralla-china-introduccion-la-gran.html" target="_blank" class="article-card" data-title="muralla china introduccion la gran">
+                    <h3>Muralla china introduccion la gran</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/nan-madol-la-ciudad-perdida-del.html" target="_blank" class="article-card" data-title="nan madol la ciudad perdida del">
+                    <h3>Nan madol la ciudad perdida del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/nanomedicina-introduccion-la.html" target="_blank" class="article-card" data-title="nanomedicina introduccion la">
+                    <h3>Nanomedicina introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/neandertales-introduccion-neandertales.html" target="_blank" class="article-card" data-title="neandertales introduccion neandertales">
+                    <h3>Neandertales introduccion neandertales</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/nuevos-materiales-en-la-sociedad-del.html" target="_blank" class="article-card" data-title="nuevos materiales en la sociedad del">
+                    <h3>Nuevos materiales en la sociedad del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/numeros-arabigos-introduccion-los.html" target="_blank" class="article-card" data-title="numeros arabigos introduccion los">
+                    <h3>Numeros arabigos introduccion los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/objetivo-explicar-que-es-la-tecnologia.html" target="_blank" class="article-card" data-title="objetivo explicar que es la tecnologia">
+                    <h3>Objetivo explicar que es la tecnologia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/ooparts-artefactos-fuera-de-su-lugar.html" target="_blank" class="article-card" data-title="ooparts artefactos fuera de su lugar">
+                    <h3>Ooparts artefactos fuera de su lugar</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/optica-cuantica-introduccion-la-luz-ha.html" target="_blank" class="article-card" data-title="optica cuantica introduccion la luz ha">
+                    <h3>Optica cuantica introduccion la luz ha</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/ovnis-y-documentos-desclasificados-del.html" target="_blank" class="article-card" data-title="ovnis y documentos desclasificados del">
+                    <h3>Ovnis y documentos desclasificados del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/partidos-politico-al-servicio-del.html" target="_blank" class="article-card" data-title="partidos politico al servicio del">
+                    <h3>Partidos politico al servicio del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/periodismo-si-tu-estas-empleando-esto.html" target="_blank" class="article-card" data-title="periodismo si tu estas empleando esto">
+                    <h3>Periodismo si tu estas empleando esto</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/piramides-de-egipto-lo-que-sabemos-lo.html" target="_blank" class="article-card" data-title="piramides de egipto lo que sabemos lo">
+                    <h3>Piramides de egipto lo que sabemos lo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/plan-para-la-construccion-de-vivienda.html" target="_blank" class="article-card" data-title="plan para la construccion de vivienda">
+                    <h3>Plan para la construccion de vivienda</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/planeta-nueve-introduccion-desde-2016.html" target="_blank" class="article-card" data-title="planeta nueve introduccion desde 2016">
+                    <h3>Planeta nueve introduccion desde 2016</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/platon-arquitecto-del-pensamiento.html" target="_blank" class="article-card" data-title="platon arquitecto del pensamiento">
+                    <h3>Platon arquitecto del pensamiento</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/poliandria-la-gran-desconocida.html" target="_blank" class="article-card" data-title="poliandria la gran desconocida">
+                    <h3>Poliandria la gran desconocida</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/polimeros-biodegradables.html" target="_blank" class="article-card" data-title="polimeros biodegradables">
+                    <h3>Polimeros biodegradables</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/posibilidad-de-viajar-la-velocidad-de.html" target="_blank" class="article-card" data-title="posibilidad de viajar la velocidad de">
+                    <h3>Posibilidad de viajar la velocidad de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/posible-modelo-de-sociedad-futura-con.html" target="_blank" class="article-card" data-title="posible modelo de sociedad futura con">
+                    <h3>Posible modelo de sociedad futura con</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/priorato-de-sion-parte-i-introduccion.html" target="_blank" class="article-card" data-title="priorato de sion parte i introduccion">
+                    <h3>Priorato de sion parte i introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/priorato-de-sion-parte-ii-1.html" target="_blank" class="article-card" data-title="priorato de sion parte ii 1">
+                    <h3>Priorato de sion parte ii 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/progrsista-el-titulo-de-los-mediocres.html" target="_blank" class="article-card" data-title="progrsista el titulo de los mediocres">
+                    <h3>Progrsista el titulo de los mediocres</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/prologo-del-autor-de-este-blog-ante-las.html" target="_blank" class="article-card" data-title="prologo del autor de este blog ante las">
+                    <h3>Prologo del autor de este blog ante las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/propuesta-de-un-modelo-de-sociedad.html" target="_blank" class="article-card" data-title="propuesta de un modelo de sociedad">
+                    <h3>Propuesta de un modelo de sociedad</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/propuesta-para-otorgar-una-paga-mensual.html" target="_blank" class="article-card" data-title="propuesta para otorgar una paga mensual">
+                    <h3>Propuesta para otorgar una paga mensual</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/proyecto-filadelfia-introduccion-entre.html" target="_blank" class="article-card" data-title="proyecto filadelfia introduccion entre">
+                    <h3>Proyecto filadelfia introduccion entre</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/proyecto-manhattan-ciencia-poder-y.html" target="_blank" class="article-card" data-title="proyecto manhattan ciencia poder y">
+                    <h3>Proyecto manhattan ciencia poder y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/publicar-el-dia-20-justicia-social.html" target="_blank" class="article-card" data-title="publicar el dia 20 justicia social">
+                    <h3>Publicar el dia 20 justicia social</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/radiactividad-introduccion-que-es-la.html" target="_blank" class="article-card" data-title="radiactividad introduccion que es la">
+                    <h3>Radiactividad introduccion que es la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/ralentizar-el-envejecimiento-telomeros.html" target="_blank" class="article-card" data-title="ralentizar el envejecimiento telomeros">
+                    <h3>Ralentizar el envejecimiento telomeros</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/rebatir-el-mito-de-la-escasez-de-agua.html" target="_blank" class="article-card" data-title="rebatir el mito de la escasez de agua">
+                    <h3>Rebatir el mito de la escasez de agua</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/reencarnacion-introduccion-la.html" target="_blank" class="article-card" data-title="reencarnacion introduccion la">
+                    <h3>Reencarnacion introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/resucitacion-del-mamut-lanudo.html" target="_blank" class="article-card" data-title="resucitacion del mamut lanudo">
+                    <h3>Resucitacion del mamut lanudo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/riesgos-naturales-una-reflexion-riesgos.html" target="_blank" class="article-card" data-title="riesgos naturales una reflexion riesgos">
+                    <h3>Riesgos naturales una reflexion riesgos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/12/robotica-blanda-diseno-de-robots.html" target="_blank" class="article-card" data-title="robotica blanda diseno de robots">
+                    <h3>Robotica blanda diseno de robots</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/samurais-introduccion-la-memoria-del.html" target="_blank" class="article-card" data-title="samurais introduccion la memoria del">
+                    <h3>Samurais introduccion la memoria del</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/satelite-europa-introduccion-entre-los.html" target="_blank" class="article-card" data-title="satelite europa introduccion entre los">
+                    <h3>Satelite europa introduccion entre los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/se-pueden-transmitir-recuerdos-o.html" target="_blank" class="article-card" data-title="se pueden transmitir recuerdos o">
+                    <h3>Se pueden transmitir recuerdos o</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/sentinel-del-norte-introduccion-la-isla.html" target="_blank" class="article-card" data-title="sentinel del norte introduccion la isla">
+                    <h3>Sentinel del norte introduccion la isla</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/siberia-introduccion-siberia-inmensa-y.html" target="_blank" class="article-card" data-title="siberia introduccion siberia inmensa y">
+                    <h3>Siberia introduccion siberia inmensa y</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte.html" target="_blank" class="article-card" data-title="situacion general del mundo parte">
+                    <h3>Situacion general del mundo parte</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-1.html" target="_blank" class="article-card" data-title="situacion general del mundo parte 1">
+                    <h3>Situacion general del mundo parte 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-2.html" target="_blank" class="article-card" data-title="situacion general del mundo parte 2">
+                    <h3>Situacion general del mundo parte 2</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-3.html" target="_blank" class="article-card" data-title="situacion general del mundo parte 3">
+                    <h3>Situacion general del mundo parte 3</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-cinco.html" target="_blank" class="article-card" data-title="situacion general del mundo parte cinco">
+                    <h3>Situacion general del mundo parte cinco</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-ocho.html" target="_blank" class="article-card" data-title="situacion general del mundo parte ocho">
+                    <h3>Situacion general del mundo parte ocho</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-seis.html" target="_blank" class="article-card" data-title="situacion general del mundo parte seis">
+                    <h3>Situacion general del mundo parte seis</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/situacion-general-del-mundo-parte-siete.html" target="_blank" class="article-card" data-title="situacion general del mundo parte siete">
+                    <h3>Situacion general del mundo parte siete</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/12/socialismo-la-gran-manipulacion-y-el.html" target="_blank" class="article-card" data-title="socialismo la gran manipulacion y el">
+                    <h3>Socialismo la gran manipulacion y el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/05/stonehenge-y-sus-alineaciones-con-los.html" target="_blank" class="article-card" data-title="stonehenge y sus alineaciones con los">
+                    <h3>Stonehenge y sus alineaciones con los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/suenos-lucidos-que-son-y-como.html" target="_blank" class="article-card" data-title="suenos lucidos que son y como">
+                    <h3>Suenos lucidos que son y como</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/supernovas-introduccion-supernovas.html" target="_blank" class="article-card" data-title="supernovas introduccion supernovas">
+                    <h3>Supernovas introduccion supernovas</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/superpoblacion-un-mito-aprovechado-para.html" target="_blank" class="article-card" data-title="superpoblacion un mito aprovechado para">
+                    <h3>Superpoblacion un mito aprovechado para</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/superposicion-cuantica-introduccion-en.html" target="_blank" class="article-card" data-title="superposicion cuantica introduccion en">
+                    <h3>Superposicion cuantica introduccion en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/supervivencia-el-agua-es-esencial-para.html" target="_blank" class="article-card" data-title="supervivencia el agua es esencial para">
+                    <h3>Supervivencia el agua es esencial para</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/tardigraos-osos-de-agua-introduccion.html" target="_blank" class="article-card" data-title="tardigraos osos de agua introduccion">
+                    <h3>Tardigraos osos de agua introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/telaranas-como-biomateriales.html" target="_blank" class="article-card" data-title="telaranas como biomateriales">
+                    <h3>Telaranas como biomateriales</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/telepatia-el-estado-actual-de-la.html" target="_blank" class="article-card" data-title="telepatia el estado actual de la">
+                    <h3>Telepatia el estado actual de la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/telescopio-espacial-hubble-introduccion.html" target="_blank" class="article-card" data-title="telescopio espacial hubble introduccion">
+                    <h3>Telescopio espacial hubble introduccion</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/templarios-parte-i-introduccion-los.html" target="_blank" class="article-card" data-title="templarios parte i introduccion los">
+                    <h3>Templarios parte i introduccion los</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/templarios-parte-ii-el-juicio-y-la.html" target="_blank" class="article-card" data-title="templarios parte ii el juicio y la">
+                    <h3>Templarios parte ii el juicio y la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/01/teoria-de-cuerdas-introduccion-la.html" target="_blank" class="article-card" data-title="teoria de cuerdas introduccion la">
+                    <h3>Teoria de cuerdas introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2026/01/terapia-de-fagos-el-desarrollo-de-virus.html" target="_blank" class="article-card" data-title="terapia de fagos el desarrollo de virus">
+                    <h3>Terapia de fagos el desarrollo de virus</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/terremotos-introduccion-los-terremotos.html" target="_blank" class="article-card" data-title="terremotos introduccion los terremotos">
+                    <h3>Terremotos introduccion los terremotos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/tierras-raras-introduccion-las-tierras.html" target="_blank" class="article-card" data-title="tierras raras introduccion las tierras">
+                    <h3>Tierras raras introduccion las tierras</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/torio-alternativa-al-uranio-parte-i.html" target="_blank" class="article-card" data-title="torio alternativa al uranio parte i">
+                    <h3>Torio alternativa al uranio parte i</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/10/trabajo-y-economia-futura-siguiendo-la.html" target="_blank" class="article-card" data-title="trabajo y economia futura siguiendo la">
+                    <h3>Trabajo y economia futura siguiendo la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/11/transformacion-molecular-disenar.html" target="_blank" class="article-card" data-title="transformacion molecular disenar">
+                    <h3>Transformacion molecular disenar</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/04/transicion-sistemica-en-el-mundo-hacia.html" target="_blank" class="article-card" data-title="transicion sistemica en el mundo hacia">
+                    <h3>Transicion sistemica en el mundo hacia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/tribus-no-contactadas-introduccion-las.html" target="_blank" class="article-card" data-title="tribus no contactadas introduccion las">
+                    <h3>Tribus no contactadas introduccion las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/07/ucrania-introduccion-ucrania-situada.html" target="_blank" class="article-card" data-title="ucrania introduccion ucrania situada">
+                    <h3>Ucrania introduccion ucrania situada</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/vencejos-introduccion-los-vencejos.html" target="_blank" class="article-card" data-title="vencejos introduccion los vencejos">
+                    <h3>Vencejos introduccion los vencejos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/viriato-introduccion-viriato-caudillo.html" target="_blank" class="article-card" data-title="viriato introduccion viriato caudillo">
+                    <h3>Viriato introduccion viriato caudillo</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/virus-y-bacterias-introduccion-el.html" target="_blank" class="article-card" data-title="virus y bacterias introduccion el">
+                    <h3>Virus y bacterias introduccion el</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/vlad-iii-el-empalador-el-mito-de.html" target="_blank" class="article-card" data-title="vlad iii el empalador el mito de">
+                    <h3>Vlad iii el empalador el mito de</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/volcanes-introduccion-los-volcanes-son.html" target="_blank" class="article-card" data-title="volcanes introduccion los volcanes son">
+                    <h3>Volcanes introduccion los volcanes son</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/vudu-introduccion-el-vudu-es-una-de-las.html" target="_blank" class="article-card" data-title="vudu introduccion el vudu es una de las">
+                    <h3>Vudu introduccion el vudu es una de las</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/09/xxx-antimateria-introduccion-la.html" target="_blank" class="article-card" data-title="xxx antimateria introduccion la">
+                    <h3>Xxx antimateria introduccion la</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/xxx-el-mundo-de-la-robotica-1.html" target="_blank" class="article-card" data-title="xxx el mundo de la robotica 1">
+                    <h3>Xxx el mundo de la robotica 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/xxx-el-origen-de-la-vida-parte-ii-1.html" target="_blank" class="article-card" data-title="xxx el origen de la vida parte ii 1">
+                    <h3>Xxx el origen de la vida parte ii 1</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/xxx-guerras-civiles-economia-y-recursos.html" target="_blank" class="article-card" data-title="xxx guerras civiles economia y recursos">
+                    <h3>Xxx guerras civiles economia y recursos</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2024/11/xxx-influencia-de-la-inteligencia.html" target="_blank" class="article-card" data-title="xxx influencia de la inteligencia">
+                    <h3>Xxx influencia de la inteligencia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/10/xxx-la-inteligencia-de-los-materiales.html" target="_blank" class="article-card" data-title="xxx la inteligencia de los materiales">
+                    <h3>Xxx la inteligencia de los materiales</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/xxx-las-claves-de-la-historia-basado-en.html" target="_blank" class="article-card" data-title="xxx las claves de la historia basado en">
+                    <h3>Xxx las claves de la historia basado en</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/xxx-las-claves-ocultas-de-la-historia.html" target="_blank" class="article-card" data-title="xxx las claves ocultas de la historia">
+                    <h3>Xxx las claves ocultas de la historia</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/08/xxx-los-extranos-sonidos-del-espacio.html" target="_blank" class="article-card" data-title="xxx los extranos sonidos del espacio">
+                    <h3>Xxx los extranos sonidos del espacio</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/02/xxx-marhuana-desmontando-mitos-parte.html" target="_blank" class="article-card" data-title="xxx marhuana desmontando mitos parte">
+                    <h3>Xxx marhuana desmontando mitos parte</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+                <a href="https://josr957.blogspot.com/2025/03/xxx-torio-alternativa-al-uranio-5.html" target="_blank" class="article-card" data-title="xxx torio alternativa al uranio 5">
+                    <h3>Xxx torio alternativa al uranio 5</h3>
+                    <span class="btn-view">Leer más</span>
+                </a>
+            </div>
+            <footer>
+                Generado automáticamente - Gestor de Artículos
+            </footer>
         </div>
 
-        <div class="article-list" id="articleList">
-            <a href="https://josr957.blogspot.com/2025/02/1984-una-distopia-cada-vez-mas-real.html" target="_blank" class="article-card" data-title="1984 una distopia cada vez mas real">
-                <h3>1984 una distopía cada vez más real</h3>
-                <span class="btn-view">Leer artículo</span>
-            </a>
-            
-            <a href="https://josr957.blogspot.com/2025/03/xxx-torio-alternativa-al-uranio-5.html" target="_blank" class="article-card" data-title="xxx torio alternativa al uranio 5">
-                <h3>Xxx torio alternativa al uranio 5</h3>
-                <span class="btn-view">Leer artículo</span>
-            </a>
-        </div>
-
-        <footer>
-            &copy; 2026 José María Pérez Quintana - Gestor de Artículos Personalizado
-        </footer>
-    </div>
-
-    <script>
-        function filterArticles() {
-            const input = document.getElementById('searchBar').value.toLowerCase();
-            const cards = document.getElementsByClassName('article-card');
-            
-            for (let card of cards) {
-                const title = card.getAttribute('data-title').toLowerCase();
-                if (title.includes(input)) {
-                    card.style.display = "flex";
-                } else {
-                    card.style.display = "none";
+        <script>
+            function filterArticles() {
+                const input = document.getElementById('searchBar').value.toLowerCase();
+                const cards = document.getElementsByClassName('article-card');
+                
+                for (let card of cards) {
+                    const title = card.getAttribute('data-title');
+                    if (title.includes(input)) {
+                        card.style.display = "flex";
+                    } else {
+                        card.style.display = "none";
+                    }
                 }
             }
-        }
-    </script>
-</body>
-</html>
+        </script>
+    </body>
+    </html>
+    
