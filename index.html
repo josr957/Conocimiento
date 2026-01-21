@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Archivo de Divulgación · José María Pérez Quintana</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <style>
+    :root{
+      --bg0:#0b1020; --bg1:#0b1224; --card:#ffffff; --muted:#64748b;
+      --text:#0f172a; --line:#e2e8f0; --accent:#3b82f6; --accent2:#22c55e;
+      --shadow: 0 18px 50px rgba(2,6,23,.12); --shadow2: 0 10px 30px rgba(2,6,23,.10);
+      --radius: 18px; --sidebar: 360px;
+    }
+
+    body.dark{
+      --card:#0f172a; --text:#e5e7eb; --muted:#94a3b8;
+      --line: rgba(148,163,184,.18);
+      --shadow: 0 18px 60px rgba(0,0,0,.45); --shadow2: 0 10px 30px rgba(0,0,0,.35);
+      background: radial-gradient(1200px 800px at 10% 0%, rgba(59,130,246,.20), transparent 60%),
+                  linear-gradient(180deg, #050816 0%, #070b16 100%);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%; margin:0; overflow:hidden;}
+    body{
+      font-family: Inter, sans-serif;
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% 0%, rgba(59,130,246,.18), transparent 60%),
+                  linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+      display:flex;
+    }
+
+    .sidebar{
+      width: var(--sidebar);
+      height:100vh;
+      padding: 18px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      z-index:10;
+      flex-shrink: 0;
+    }
+
+    .glass{
+      background: rgba(255,255,255,.72);
+      border: 1px solid rgba(226,232,240,.9);
+      box-shadow: var(--shadow2);
+      border-radius: var(--radius);
+      backdrop-filter: blur(10px);
+    }
+    body.dark .glass{ background: rgba(15,23,42,.72); border-color: rgba(148,163,184,.16); }
+
+    .brand{ padding: 16px; display:flex; align-items:center; justify-content:space-between; }
+    .brand img{ width:52px; height:52px; border-radius:14px; object-fit:cover; }
+    .brand h1{ margin:0; font-family: "Playfair Display", serif; font-size: 1.25rem; }
+
+    .controls{ padding: 14px; display:flex; flex-direction:column; gap:10px; }
+    .row{ display:flex; gap:10px; align-items:center; }
+    .search{ flex:1; position:relative; }
+    .search i{ position:absolute; left:12px; top:50%; transform:translateY(-50%); color: var(--muted); }
+    #searchInput{ width:100%; padding: 12px 12px 12px 36px; border-radius: 14px; border: 1px solid var(--line); outline:none; }
+
+    .pill{ padding: 10px 14px; border-radius: 14px; border: 1px solid var(--line); cursor:pointer; display:flex; align-items:center; gap:8px; font-weight:700; transition:.2s; text-decoration:none; color:inherit; font-size:0.85rem; }
+    .pill:hover{ transform:translateY(-1px); background:rgba(255,255,255,0.9); box-shadow: var(--shadow2); }
+
+    .list{
+      flex:1;
+      overflow-y:auto;
+      padding: 10px;
+      min-height: 0;
+    }
+    .list::-webkit-scrollbar{ width:6px }
+    .list::-webkit-scrollbar-thumb{ background: rgba(100,116,139,.3); border-radius: 10px }
+
+    .item{
+      display:flex; align-items:center; justify-content:space-between; padding: 12px;
+      margin-bottom: 8px; border-radius: 12px; border: 1px solid transparent;
+      background: rgba(255,255,255,0.5); cursor:pointer; transition:.2s;
+    }
+    .item:hover, .item.active{ border-color: var(--accent); background: white; }
+    .item .title{ font-weight:700; font-size:.9rem; }
+
+    .main{ flex:1; height:100vh; overflow-y:auto; padding: 24px; }
+    .hero{ max-width: 900px; margin: 0 auto; }
+    .card{ display:none; padding: 30px; }
+
+    @media (max-width: 1024px){
+      .sidebar{ position:fixed; left:0; transform:translateX(-105%); transition:.3s; background:#f8fafc; }
+      .sidebar.open{ transform:translateX(0); }
+    }
+  </style>
+</head>
+<body class="light">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="glass brand">
+      <div>
+        <h1>Mis Artículos</h1>
+        <p style="margin:0; font-size:0.8rem; color:var(--muted);">Archivo de divulgación</p>
+      </div>
+      <img src="./LOGO.png" alt="Logo" onerror="this.src='https://raw.githubusercontent.com/josr957/Conocimiento/main/LOGO.png';">
+    </div>
+
+    <div class="glass controls">
+      <div class="row">
+        <div class="search">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input id="searchInput" type="text" placeholder="Buscar artículo...">
+        </div>
+        <div class="pill" id="themeBtn" title="Modo Oscuro"><i class="fa-solid fa-moon"></i></div>
+      </div>
+      <div class="row" style="font-size: 0.8rem; justify-content: space-between; color: var(--muted); font-weight: 600;">
+        <span id="countDisplay">0 artículos</span>
+        <span id="loadStatus">Cargando...</span>
+      </div>
+    </div>
+
+    <div class="glass list" id="articleList"></div>
+  </aside>
+
+  <main class="main">
+    <div class="row" style="margin-bottom: 20px; justify-content: flex-end;">
+      <span class="pill" id="reloadBtn" style="background:var(--accent); color:white; border:0;">
+        <i class="fa-solid fa-rotate"></i> Actualizar Índice
+      </span>
+    </div>
+
+    <section class="glass hero panel">
+      <div class="card" id="articleCard">
+        <div id="printableArea" style="padding:10px;">
+          <h1 id="artTitle" style="font-family:'Playfair Display', serif; margin:0 0 10px 0; font-size:2rem;"></h1>
+          <p id="artUrl" style="word-break:break-all; color:var(--accent); font-weight:600; margin-bottom:20px;"></p>
+          <div style="border-top:1px solid var(--line); padding-top:15px; font-weight:500;">
+            <p><strong>Autor:</strong> José María Pérez Quintana</p>
+            <p><strong>Referencia:</strong> Acceso directo al artículo original.</p>
+          </div>
+        </div>
+        
+        <div class="row" style="margin-top:25px; gap:12px; flex-wrap:wrap; border-top:1px solid var(--line); padding-top:20px;">
+          <a href="#" id="readBtn" target="_blank" class="pill" style="background:var(--accent2); color:white; border:0;">
+            <i class="fa-solid fa-up-right-from-square"></i> LEER AHORA
+          </a>
+          <button id="pdfBtn" class="pill"><i class="fa-solid fa-file-pdf"></i> GUARDAR PDF</button>
+          <button id="copyBtn" class="pill"><i class="fa-solid fa-copy"></i> COPIAR URL</button>
+          <button id="toggleFavBtn" class="pill"><i class="fa-solid fa-star"></i> FAVORITO</button>
+          <button id="clearBtn" class="pill" style="color: #ef4444;"><i class="fa-solid fa-eraser"></i> LIMPIAR</button>
+        </div>
+      </div>
+
+      <div id="welcome" style="text-align:center; padding:60px 20px;">
+        <i class="fa-solid fa-book-open" style="font-size:4rem; color:var(--accent); opacity:0.2; margin-bottom:20px;"></i>
+        <h2 style="font-family:'Playfair Display', serif;">Bienvenido al Archivo</h2>
+        <p style="color:var(--muted); max-width:500px; margin:10px auto;">
+          Selecciona un artículo de la lista de la izquierda para ver los detalles, generar un PDF o copiar su enlace directo.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const JSON_PATH = "ARTICULOS.json";
+    let allArticles = [];
+    let filtered = [];
+    let activeIndex = -1;
+
+    const els = {
+      list: document.getElementById("articleList"),
+      search: document.getElementById("searchInput"),
+      count: document.getElementById("countDisplay"),
+      loadStatus: document.getElementById("loadStatus"),
+      welcome: document.getElementById("welcome"),
+      card: document.getElementById("articleCard"),
+      title: document.getElementById("artTitle"),
+      url: document.getElementById("artUrl"),
+      readBtn: document.getElementById("readBtn"),
+      reloadBtn: document.getElementById("reloadBtn"),
+      pdfBtn: document.getElementById("pdfBtn"),
+      copyBtn: document.getElementById("copyBtn"),
+      clearBtn: document.getElementById("clearBtn"),
+      toggleFavBtn: document.getElementById("toggleFavBtn"),
+      themeBtn: document.getElementById("themeBtn")
+    };
+
+    function renderList(items) {
+      els.list.innerHTML = "";
+      items.forEach((a, idx) => {
+        const div = document.createElement("div");
+        div.className = "item" + (activeIndex === idx ? " active" : "");
+        div.innerHTML = `<div class="title">${a.nombre}</div><i class="fa-solid fa-chevron-right" style="font-size:0.7rem; opacity:0.3;"></i>`;
+        div.onclick = () => {
+          activeIndex = idx;
+          showArticle(a);
+          renderList(items);
+        };
+        els.list.appendChild(div);
+      });
+    }
+
+    function showArticle(a) {
+      els.welcome.style.display = "none";
+      els.card.style.display = "block";
+      els.title.textContent = a.nombre;
+      els.url.textContent = a.url;
+      els.readBtn.href = a.url;
+    }
+
+    function clearView() {
+      activeIndex = -1;
+      els.card.style.display = "none";
+      els.welcome.style.display = "block";
+      renderList(filtered);
+    }
+
+    async function copyURL() {
+      const url = els.url.textContent;
+      try {
+        await navigator.clipboard.writeText(url);
+        alert("¡URL copiada al portapapeles!");
+      } catch (err) {
+        const input = document.createElement('input');
+        input.value = url;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        alert("¡URL copiada!");
+      }
+    }
+
+    function generatePDF() {
+      const element = document.getElementById('printableArea');
+      const opt = {
+        margin: 10,
+        filename: els.title.textContent + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      html2pdf().set(opt).from(element).save();
+    }
+
+    async function loadArticles() {
+      try {
+        els.loadStatus.textContent = "Cargando...";
+        const res = await fetch(JSON_PATH + "?t=" + Date.now());
+        allArticles = await res.json();
+        allArticles.sort((a,b) => a.nombre.localeCompare(b.nombre));
+        filtered = [...allArticles];
+        els.count.textContent = `${filtered.length} artículos`;
+        els.loadStatus.textContent = "OK";
+        renderList(filtered);
+      } catch (e) {
+        els.loadStatus.textContent = "Error JSON";
+      }
+    }
+
+    // EVENTOS
+    els.reloadBtn.onclick = loadArticles;
+    els.copyBtn.onclick = copyURL;
+    els.pdfBtn.onclick = generatePDF;
+    els.clearBtn.onclick = clearView;
+    els.search.oninput = () => {
+      const q = els.search.value.toLowerCase();
+      filtered = allArticles.filter(a => a.nombre.toLowerCase().includes(q));
+      els.count.textContent = `${filtered.length} artículos`;
+      renderList(filtered);
+    };
+    els.themeBtn.onclick = () => {
+      document.body.classList.toggle("dark");
+    };
+
+    loadArticles();
+  </script>
+</body>
+</html>
