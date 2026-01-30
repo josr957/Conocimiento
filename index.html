@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Conocimiento — Artículos</title>
+  <style>
+    :root{
+      --bg:#0b0f17; --card:#111a2a; --ink:#e9eefc; --muted:#a9b6d6;
+      --line:rgba(255,255,255,.10); --accent:#7aa2ff; --accent2:#57e3ff;
+      --chip:rgba(122,162,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(122,162,255,.16), transparent 55%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(87,227,255,.14), transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+    }
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(11,15,23,.85), rgba(11,15,23,.55));
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1180px; margin:0 auto; padding:18px 18px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .brand h1{
+      margin:0; font-size:18px; letter-spacing:.3px; font-weight:800;
+    }
+    .brand small{color:var(--muted)}
+    .logo{
+      width:54px; height:54px; border-radius:14px;
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      object-fit:cover;
+      background:rgba(255,255,255,.06);
+    }
+
+    main{padding:22px 0 34px}
+    .controls{
+      display:grid;
+      grid-template-columns: 1.2fr .6fr .6fr .8fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){
+      .controls{grid-template-columns:1fr 1fr; }
+    }
+    @media (max-width: 560px){
+      .controls{grid-template-columns:1fr;}
+    }
+    .field{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .field label{font-size:12px; color:var(--muted)}
+    input, select{
+      background:transparent; border:none; outline:none; color:var(--ink);
+      font-size:14px; padding:2px 0;
+    }
+    input::placeholder{color:rgba(233,238,252,.45)}
+    .btnrow{
+      display:flex; gap:10px; align-items:end; justify-content:flex-end;
+    }
+    button{
+      cursor:pointer;
+      border:1px solid rgba(122,162,255,.35);
+      background: linear-gradient(180deg, rgba(122,162,255,.18), rgba(122,162,255,.08));
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:700;
+      transition: transform .08s ease, border-color .2s ease, background .2s ease;
+    }
+    button:hover{transform: translateY(-1px); border-color: rgba(87,227,255,.55)}
+    button.secondary{
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(17,26,42,.96), rgba(17,26,42,.74));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px 14px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+    .meta{
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      margin-top:8px;
+    }
+    .chip{
+      font-size:12px; color:var(--muted);
+      border:1px solid rgba(122,162,255,.22);
+      background: var(--chip);
+      padding:5px 10px;
+      border-radius:999px;
+    }
+    .title{
+      margin:0;
+      font-size:16px;
+      font-weight:850;
+      line-height:1.25;
+    }
+    .desc{margin:6px 0 0 0; color:rgba(233,238,252,.72); font-size:13px; line-height:1.45}
+    .actions{
+      display:flex; gap:10px; justify-content:flex-end; align-items:center;
+      flex-wrap:wrap;
+    }
+    a.action{
+      text-decoration:none;
+      border:1px solid rgba(87,227,255,.40);
+      background: linear-gradient(180deg, rgba(87,227,255,.16), rgba(87,227,255,.06));
+      padding:10px 12px;
+      border-radius:14px;
+      color:var(--ink);
+      font-weight:800;
+      font-size:13px;
+      white-space:nowrap;
+    }
+    a.action.secondary{
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+      color: rgba(233,238,252,.90);
+      font-weight:700;
+    }
+
+    .status{
+      margin-top:12px;
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+      color:var(--muted);
+      font-size:13px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:99px;
+      background: rgba(87,227,255,.75);
+      box-shadow: 0 0 0 4px rgba(87,227,255,.12);
+    }
+    .error{color:#ffb3b3}
+    .hint{
+      margin-top:10px;
+      color:rgba(233,238,252,.55);
+      font-size:12px;
+    }
+    code.inline{
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.10);
+      padding: 2px 6px;
+      border-radius: 8px;
+      color: rgba(233,238,252,.88);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <h1>Conocimiento — Artículos</h1>
+          <small>Índice dinámico desde <span class="inline" id="jsonName">articulos.json</span></small>
+        </div>
+
+        <!-- SOLO CAMBIO: ruta robusta + aviso -->
+        <img class="logo" src="./logo.png" alt="Logo"
+             onerror="console.error('NO se pudo cargar ./logo.png. Revisa nombre exacto (mayúsculas/minúsculas) y ubicación.'); this.style.display='none';" />
+      </div>
+
+      <div class="controls">
+        <div class="field">
+          <label>Buscar (título / tema / fecha)</label>
+          <input id="q" type="text" placeholder="Ej: Ucrania, cuántica, 2025..." />
+        </div>
+
+        <div class="field">
+          <label>Filtrar por tema</label>
+          <select id="tema">
+            <option value="">Todos</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label>Orden</label>
+          <select id="orden">
+            <option value="fecha_desc">Fecha (nueva → antigua)</option>
+            <option value="fecha_asc">Fecha (antigua → nueva)</option>
+            <option value="az">Título (A → Z)</option>
+            <option value="za">Título (Z → A)</option>
+          </select>
+        </div>
+
+        <div class="btnrow">
+          <button id="recargar">Recargar</button>
+          <button id="limpiar" class="secondary">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="status" id="status">
+        <span class="dot"></span>
+        <span id="statusText">Listo</span>
+      </div>
+      <div class="hint">
+        Si no carga en GitHub Pages: prueba abrir la web desde su URL pública (no desde el archivo local),
+        y asegúrate de que <code class="inline">articulos.json</code> está en la misma carpeta.
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+      <div class="grid" id="grid"></div>
+    </div>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  const JSON_FILE = "articulos.json"; // debe estar junto a index.html
+  const $ = (id) => document.getElementById(id);
+
+  const els = {
+    grid: $("grid"),
+    q: $("q"),
+    tema: $("tema"),
+    orden: $("orden"),
+    recargar: $("recargar"),
+    limpiar: $("limpiar"),
+    statusText: $("statusText"),
+    status: $("status")
+  };
+
+  let allArticles = [];
+  let temasSet = new Set();
+
+  function setStatus(text, isError=false){
+    els.statusText.textContent = text;
+    els.statusText.className = isError ? "error" : "";
+  }
+
+  function parseDateSmart(s){
+    if (!s) return null;
+    const str = String(s).trim();
+    const iso = str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+    const dmy = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if (dmy) return new Date(Number(dmy[3]), Number(dmy[2]) - 1, Number(dmy[1]));
+    const dt = new Date(str);
+    return isNaN(dt.getTime()) ? null : dt;
+  }
+
+  function normalizeArticle(a){
+    const nombreRaw = (a?.nombre ?? "").toString();
+    const urlRaw = (a?.url ?? "").toString();
+    const temaRaw = (a?.tema ?? "").toString();
+
+    const partsNombre = nombreRaw.split(" | ");
+    const partsUrl = urlRaw.split(" | ");
+
+    const url = (partsUrl[0] || urlRaw).trim();
+    const titulo = (partsNombre[1] || partsUrl[1] || partsNombre[0] || "Sin título").trim();
+    const fecha = (partsNombre[2] || partsUrl[2] || a?.fecha || "").toString().trim();
+    const tema = temaRaw.trim();
+
+    return {
+      ...a,
+      url,
+      titulo,
+      fecha,
+      tema,
+      _fechaObj: parseDateSmart(fecha)
+    };
+  }
+
+  function uniqueSorted(arr){
+    return [...new Set(arr)].filter(Boolean).sort((a,b)=>a.localeCompare(b, "es", {sensitivity:"base"}));
+  }
+
+  function fillTemas(){
+    const temas = uniqueSorted(allArticles.map(a => a.tema).filter(Boolean));
+    els.tema.innerHTML = `<option value="">Todos</option>` +
+      temas.map(t => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
+  }
+
+  function escapeHtml(s){
+    return String(s)
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function matchesQuery(article, q){
+    if(!q) return true;
+    const hay = `${article.titulo} ${article.tema} ${article.fecha}`.toLowerCase();
+    return hay.includes(q.toLowerCase());
+  }
+
+  function sortArticles(list){
+    const mode = els.orden.value;
+    const coll = new Intl.Collator("es", {sensitivity:"base"});
+    const safeTime = (a) => a._fechaObj ? a._fechaObj.getTime() : -Infinity;
+
+    const out = [...list];
+    if (mode === "fecha_desc"){
+      out.sort((a,b)=> safeTime(b) - safeTime(a));
+    } else if (mode === "fecha_asc"){
+      out.sort((a,b)=> safeTime(a) - safeTime(b));
+    } else if (mode === "az"){
+      out.sort((a,b)=> coll.compare(a.titulo, b.titulo));
+    } else if (mode === "za"){
+      out.sort((a,b)=> coll.compare(b.titulo, a.titulo));
+    }
+    return out;
+  }
+
+  function render(){
+    const q = els.q.value.trim();
+    const tema = els.tema.value;
+
+    let filtered = [...allArticles];
+    if (tema) filtered = filtered.filter(a => a.tema === tema);
+    if (q) filtered = filtered.filter(a => matchesQuery(a, q));
+
+    filtered = sortArticles(filtered);
+
+    if (!filtered.length){
+      els.grid.innerHTML = `
+        <div class="card">
+          <div>
+            <h3 class="title">No hay resultados</h3>
+            <p class="desc">Prueba otro término o borra filtros.</p>
+          </div>
+          <div class="actions">
+            <a class="action secondary" href="#" id="btnClearEmpty">Limpiar filtros</a>
+          </div>
+        </div>
+      `;
+      const btn = document.getElementById("btnClearEmpty");
+      if (btn) btn.onclick = (e)=>{ e.preventDefault(); clearFilters(); };
+      setStatus(`0 artículos (con filtros)`);
+      return;
+    }
+
+    els.grid.innerHTML = filtered.map(a => {
+      const fecha = a.fecha ? `<span class="chip">📅 ${escapeHtml(a.fecha)}</span>` : "";
+      const temaChip = a.tema ? `<span class="chip">🏷️ ${escapeHtml(a.tema)}</span>` : `<span class="chip">🏷️ (sin tema)</span>`;
+      const url = a.url || "#";
+
+      return `
+        <div class="card">
+          <div>
+            <h3 class="title">${escapeHtml(a.titulo)}</h3>
+            <div class="meta">
+              ${temaChip}
+              ${fecha}
+            </div>
+          </div>
+          <div class="actions">
+            <a class="action" href="${escapeHtml(url)}" target="_blank" rel="noopener">LEER ARTÍCULO</a>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    setStatus(`${filtered.length} artículos`);
+  }
+
+  function clearFilters(){
+    els.q.value = "";
+    els.tema.value = "";
+    els.orden.value = "fecha_desc";
+    render();
+  }
+
+  async function loadArticles(){
+    setStatus(`Cargando ${JSON_FILE}...`);
+    try{
+      const res = await fetch(`${JSON_FILE}?v=${Date.now()}`, { cache: "no-store" });
+      if (!res.ok){
+        throw new Error(`HTTP ${res.status} — No se pudo cargar ${JSON_FILE}`);
+      }
+      const data = await res.json();
+      if (!Array.isArray(data)){
+        throw new Error("El JSON no es un array de artículos.");
+      }
+      allArticles = data.map(normalizeArticle);
+      fillTemas();
+      render();
+      setStatus(`Cargado: ${allArticles.length} artículos`);
+    }catch(err){
+      console.error(err);
+      els.grid.innerHTML = `
+        <div class="card">
+          <div>
+            <h3 class="title">Error cargando artículos</h3>
+            <p class="desc">
+              <strong>${escapeHtml(err.message || String(err))}</strong><br><br>
+              Revisa que <code class="inline">${JSON_FILE}</code> exista, esté en la misma carpeta,
+              y que estés abriendo la web desde un servidor (GitHub Pages), no desde archivo local.
+            </p>
+          </div>
+          <div class="actions">
+            <a class="action secondary" href="#" id="btnRetry">Reintentar</a>
+          </div>
+        </div>
+      `;
+      const btn = document.getElementById("btnRetry");
+      if (btn) btn.onclick = (e)=>{ e.preventDefault(); loadArticles(); };
+      setStatus("Fallo al cargar el JSON", true);
+    }
+  }
+
+  els.q.addEventListener("input", render);
+  els.tema.addEventListener("change", render);
+  els.orden.addEventListener("change", render);
+  els.recargar.addEventListener("click", loadArticles);
+  els.limpiar.addEventListener("click", clearFilters);
+
+  loadArticles();
+})();
+</script>
+
+</body>
+</html>
