@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Política — Filosofía — Ciencia — Tecnología — Historia — Mitos — Leyendas</title>
+
+  <style>
+    :root{
+      --bg:#0b0f17; --card:#111a2a; --ink:#e9eefc; --muted:#a9b6d6;
+      --line:rgba(255,255,255,.10); --accent:#7aa2ff; --accent2:#57e3ff;
+      --chip:rgba(122,162,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(122,162,255,.16), transparent 55%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(87,227,255,.14), transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+    }
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(11,15,23,.85), rgba(11,15,23,.55));
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1180px; margin:0 auto; padding:18px 18px}
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:14px;
+    }
+    .brand{
+      display:flex; flex-direction:column; gap:2px; flex:1;
+    }
+    .brand h1{
+      margin:0; font-size:16px; letter-spacing:.3px; font-weight:800; line-height:1.3;
+    }
+    .brand small{color:var(--muted)}
+    .logo{
+      width:54px; height:54px; border-radius:14px;
+      border:1px solid var(--line);
+      box-shadow: var(--shadow);
+      object-fit:cover;
+      background:rgba(255,255,255,.06);
+    }
+
+    main{padding:22px 0 34px}
+    .controls{
+      display:grid;
+      grid-template-columns: 1.2fr .6fr .6fr .8fr;
+      gap:12px;
+      margin-top:14px;
+    }
+    @media (max-width: 980px){
+      .controls{grid-template-columns:1fr 1fr;}
+    }
+    @media (max-width: 560px){
+      .controls{grid-template-columns:1fr;}
+      .brand h1{font-size:14px;}
+    }
+    .field{
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:10px 12px;
+      display:flex; flex-direction:column; gap:6px;
+    }
+    .field label{font-size:12px; color:var(--muted)}
+    input, select{
+      background:transparent; border:none; outline:none; color:var(--ink);
+      font-size:14px; padding:2px 0;
+    }
+    .btnrow{
+      display:flex; gap:10px; align-items:end; justify-content:flex-end;
+    }
+    button{
+      cursor:pointer;
+      border:1px solid rgba(122,162,255,.35);
+      background: linear-gradient(180deg, rgba(122,162,255,.18), rgba(122,162,255,.08));
+      color:var(--ink);
+      padding:10px 12px;
+      border-radius:14px;
+      font-weight:700;
+    }
+    button.secondary{
+      border-color: rgba(255,255,255,.16);
+      background: rgba(255,255,255,.05);
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:14px;
+      margin-top:18px;
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(17,26,42,.96), rgba(17,26,42,.74));
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding:14px;
+      display:grid;
+      grid-template-columns: 1fr auto;
+      gap:12px;
+      align-items:center;
+    }
+    .chip{
+      font-size:12px; color:var(--muted);
+      border:1px solid rgba(122,162,255,.22);
+      background: var(--chip);
+      padding:5px 10px;
+      border-radius:999px;
+    }
+    .title{
+      margin:0; font-size:16px; font-weight:850;
+    }
+    .actions a{
+      text-decoration:none;
+      border:1px solid rgba(87,227,255,.40);
+      background: linear-gradient(180deg, rgba(87,227,255,.16), rgba(87,227,255,.06));
+      padding:10px 12px;
+      border-radius:14px;
+      color:var(--ink);
+      font-weight:800;
+      font-size:13px;
+    }
+    .status{
+      margin-top:12px;
+      display:flex; gap:10px; align-items:center;
+      color:var(--muted); font-size:13px;
+    }
+    .dot{
+      width:8px; height:8px; border-radius:99px;
+      background: rgba(87,227,255,.75);
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <h1>Política — Filosofía — Ciencia — Tecnología — Historia — Mitos — Leyendas</h1>
+        <small>Índice dinámico desde <span class="chip">articulos.json</span></small>
+      </div>
+      <img class="logo" src="LOGO.png" alt="Logo">
+    </div>
+
+    <div class="controls">
+      <div class="field">
+        <label>Buscar</label>
+        <input id="q" placeholder="Buscar artículo…">
+      </div>
+      <div class="field">
+        <label>Tema</label>
+        <select id="tema"><option value="">Todos</option></select>
+      </div>
+      <div class="field">
+        <label>Orden</label>
+        <select id="orden">
+          <option value="fecha_desc">Fecha ↓</option>
+          <option value="fecha_asc">Fecha ↑</option>
+          <option value="az">A–Z</option>
+          <option value="za">Z–A</option>
+        </select>
+      </div>
+      <div class="btnrow">
+        <button id="recargar">Recargar</button>
+        <button id="limpiar" class="secondary">Limpiar</button>
+      </div>
+    </div>
+
+    <div class="status">
+      <span class="dot"></span>
+      <span id="statusText">Listo</span>
+    </div>
+
+    <!-- CONTADOR PUENTE -->
+    <div class="chip" style="margin-top:6px;">
+      👁️ Visitas totales: <span id="visitCount">248270</span>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <div class="grid" id="grid"></div>
+  </div>
+</main>
+
+<script>
+/* ===== CONTADOR DE VISITAS ===== */
+fetch('https://api.countapi.xyz/hit/josr957/conocimiento')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById('visitCount').textContent = data.value;
+  });
+
+/* ===== TU SCRIPT ORIGINAL ===== */
+(() => {
+  const JSON_FILE = "articulos.json";
+  const $ = id => document.getElementById(id);
+
+  const els = {
+    grid: $("grid"),
+    q: $("q"),
+    tema: $("tema"),
+    orden: $("orden"),
+    recargar: $("recargar"),
+    limpiar: $("limpiar"),
+    statusText: $("statusText")
+  };
+
+  let all = [];
+
+  function parseDate(f){ const d=new Date(f); return isNaN(d)?null:d; }
+
+  function normalize(a){
+    const n=(a.nombre||"").split(" | ");
+    const u=(a.url||"").split(" | ");
+    return {
+      titulo: n[1]||u[1]||n[0],
+      url: u[0],
+      fecha: n[2]||"",
+      tema: a.tema||"",
+      d: parseDate(n[2])
+    };
+  }
+
+  function render(){
+    let r=[...all];
+    if(els.tema.value) r=r.filter(a=>a.tema===els.tema.value);
+    if(els.q.value) r=r.filter(a=>(a.titulo+a.tema+a.fecha).toLowerCase().includes(els.q.value.toLowerCase()));
+    els.grid.innerHTML=r.map(a=>`
+      <div class="card">
+        <div>
+          <h3 class="title">${a.titulo}</h3>
+          <div class="chip">${a.tema||"Sin tema"} ${a.fecha}</div>
+        </div>
+        <div class="actions">
+          <a href="${a.url}" target="_blank">LEER</a>
+        </div>
+      </div>`).join("");
+    els.statusText.textContent=`${r.length} artículos`;
+  }
+
+  async function init(){
+    const res=await fetch(JSON_FILE+"?v="+Date.now());
+    all=(await res.json()).map(normalize);
+    [...new Set(all.map(a=>a.tema).filter(Boolean))].forEach(t=>{
+      const o=document.createElement("option"); o.value=o.textContent=t; els.tema.appendChild(o);
+    });
+    render();
+  }
+
+  els.q.oninput=render;
+  els.tema.onchange=render;
+  els.recargar.onclick=init;
+  els.limpiar.onclick=()=>{els.q.value="";els.tema.value="";render();};
+
+  init();
+})();
+</script>
+</body>
+</html>
