@@ -1,0 +1,272 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Política — Filosofía — Ciencia — Tecnología — Historia — Mitos — Leyendas</title>
+  <style>
+    :root{
+      --bg:#0b0f17; --card:#111a2a; --ink:#e9eefc; --muted:#a9b6d6;
+      --line:rgba(255,255,255,.10); --accent:#7aa2ff; --accent2:#57e3ff;
+      --chip:rgba(122,162,255,.14);
+      --shadow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(122,162,255,.16), transparent 55%),
+                  radial-gradient(900px 500px at 80% 10%, rgba(87,227,255,.14), transparent 55%),
+                  var(--bg);
+      color:var(--ink);
+      min-height:100vh;
+    }
+    header{
+      position:sticky; top:0; z-index:5;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(11,15,23,.85), rgba(11,15,23,.55));
+      border-bottom:1px solid var(--line);
+    }
+    .wrap{max-width:1180px; margin:0 auto; padding:18px 18px}
+    .topbar{ display:flex; align-items:center; justify-content:space-between; gap:14px; }
+    .brand{ display:flex; flex-direction:column; gap:2px; flex: 1; }
+    .brand h1{ margin:0; font-size:16px; letter-spacing:.3px; font-weight:800; line-height: 1.3; }
+    .brand small{color:var(--muted)}
+    .logo{ width:54px; height:54px; border-radius:14px; border:1px solid var(--line); box-shadow: var(--shadow); object-fit:cover; background:rgba(255,255,255,.06); }
+    main{padding:22px 0 34px}
+    .controls{ display:grid; grid-template-columns: 1.2fr .6fr .6fr .8fr; gap:12px; margin-top:14px; }
+    @media (max-width: 980px){ .controls{grid-template-columns:1fr 1fr; } }
+    @media (max-width: 560px){ .controls{grid-template-columns:1fr;} .brand h1 { font-size: 14px; } }
+    .field{ background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:14px; padding:10px 12px; display:flex; flex-direction:column; gap:6px; }
+    .field label{font-size:12px; color:var(--muted)}
+    input, select{ background:transparent; border:none; outline:none; color:var(--ink); font-size:14px; padding:2px 0; }
+    input::placeholder{color:rgba(233,238,252,.45)}
+    .btnrow{ display:flex; gap:10px; align-items:end; justify-content:flex-end; }
+    button{ cursor:pointer; border:1px solid rgba(122,162,255,.35); background: linear-gradient(180deg, rgba(122,162,255,.18), rgba(122,162,255,.08)); color:var(--ink); padding:10px 12px; border-radius:14px; font-weight:700; transition: transform .08s ease, border-color .2s ease, background .2s ease; }
+    button:hover{transform: translateY(-1px); border-color: rgba(87,227,255,.55)}
+    button.secondary{ border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.05); }
+    .grid{ display:grid; grid-template-columns: 1fr; gap:14px; margin-top:18px; }
+    .card{ background: linear-gradient(180deg, rgba(17,26,42,.96), rgba(17,26,42,.74)); border:1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding:14px 14px; display:grid; grid-template-columns: 1fr auto; gap:12px; align-items:center; }
+    .meta{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:8px; }
+    .chip{ font-size:12px; color:var(--muted); border:1px solid rgba(122,162,255,.22); background: var(--chip); padding:5px 10px; border-radius:999px; }
+    .title{ margin:0; font-size:16px; font-weight:850; line-height:1.25; }
+    .actions{ display:flex; gap:10px; justify-content:flex-end; align-items:center; flex-wrap:wrap; }
+    a.action{ text-decoration:none; border:1px solid rgba(87,227,255,.40); background: linear-gradient(180deg, rgba(87,227,255,.16), rgba(87,227,255,.06)); padding:10px 12px; border-radius:14px; color:var(--ink); font-weight:800; font-size:13px; white-space:nowrap; }
+    a.action.secondary{ border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.05); color: rgba(233,238,252,.90); font-weight:700; }
+    .status{ margin-top:12px; display:flex; gap:10px; align-items:center; flex-wrap:wrap; color:var(--muted); font-size:13px; }
+    .dot{ width:8px; height:8px; border-radius:99px; background: rgba(87,227,255,.75); box-shadow: 0 0 0 4px rgba(87,227,255,.12); }
+    .error{color:#ffb3b3}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <h1>Política — Filosofía — Ciencia — Tecnología — Historia — Mitos — Leyendas</h1>
+          <small>Índice dinámico desde <span class="inline" id="jsonName" style="background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); padding: 2px 6px; border-radius: 8px;">articulos.json</span></small>
+        </div>
+        <img class="logo" src="./LOGO.png" alt="Logo" />
+      </div>
+      <div class="controls">
+        <div class="field">
+          <label>Buscar (título / tema / fecha)</label>
+          <input id="q" type="text" placeholder="Ej: Ucrania, cuántica, 2025..." />
+        </div>
+        <div class="field">
+          <label>Filtrar por tema</label>
+          <select id="tema"><option value="">Todos</option></select>
+        </div>
+        <div class="field">
+          <label>Orden</label>
+          <select id="orden">
+            <option value="fecha_desc">Fecha (nueva → antigua)</option>
+            <option value="fecha_asc">Fecha (antigua → nueva)</option>
+            <option value="az">Título (A → Z)</option>
+            <option value="za">Título (Z → A)</option>
+          </select>
+        </div>
+        <div class="btnrow">
+          <button id="recargar">Recargar</button>
+          <button id="limpiar" class="secondary">Limpiar</button>
+        </div>
+      </div>
+      <div class="status" id="status"><span class="dot"></span><span id="statusText">Listo</span></div>
+      <div class="meta" style="margin-top:8px;">
+        <span class="chip">Visitas totales: <span id="visitCount">351250</span></span>
+        <span class="chip">Aperturas de artículos: <span id="articleOpenCount">0</span></span>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap"><div class="grid" id="grid"></div></div>
+  </main>
+
+<script>
+(() => {
+  "use strict";
+
+  /* =========================
+     CONFIGURACIÓN Y PERSISTENCIA GLOBAL
+     ========================= */
+  const BASE_TOTAL = 351250;
+  const COUNTER_TOTAL = "conocimiento_ghpages";
+  const COUNTER_ARTICLES = "conocimiento_articulos_ghpages";
+  const LS_TOTAL = "gh_visitas_totales";
+  const LS_ARTICLES = "gh_aperturas_articulos";
+
+  const cleanNum = (str) => Number(String(str).replace(/[^\d]/g, "")) || 0;
+
+  // 1. Mostrar inmediatamente lo que hay en este dispositivo o la base
+  const initDisplay = () => {
+    const localT = cleanNum(localStorage.getItem(LS_TOTAL));
+    const finalT = Math.max(BASE_TOTAL, localT);
+    document.getElementById("visitCount").textContent = finalT.toLocaleString("es-ES");
+
+    const localA = cleanNum(localStorage.getItem(LS_ARTICLES));
+    document.getElementById("articleOpenCount").textContent = localA.toLocaleString("es-ES");
+  };
+
+  // 2. Sincronizar con la API para traer datos de otros dispositivos
+  async function syncWithAPI() {
+    try {
+      // Visitas Totales
+      const resT = await fetch(`https://api.countapi.xyz/get/josr957/${COUNTER_TOTAL}`);
+      const dataT = await resT.json();
+      const apiValueT = BASE_TOTAL + (dataT.value || 0);
+      
+      const currentLocalT = cleanNum(localStorage.getItem(LS_TOTAL));
+      if (apiValueT > currentLocalT) {
+        updateUI(apiValueT, "visitCount", LS_TOTAL);
+      }
+
+      // Aperturas
+      const resA = await fetch(`https://api.countapi.xyz/get/josr957/${COUNTER_ARTICLES}`);
+      const dataA = await resA.json();
+      const apiValueA = dataA.value || 0;
+      
+      const currentLocalA = cleanNum(localStorage.getItem(LS_ARTICLES));
+      if (apiValueA > currentLocalA) {
+        updateUI(apiValueA, "articleOpenCount", LS_ARTICLES);
+      }
+    } catch(e) { console.warn("API de contadores no disponible."); }
+  }
+
+  function updateUI(value, elementId, lsKey) {
+    const formatted = value.toLocaleString("es-ES");
+    document.getElementById(elementId).textContent = formatted;
+    localStorage.setItem(lsKey, formatted);
+  }
+
+  function incrementAPI(key) {
+    // Usamos fetch con cache no-store para forzar la actualización en la nube
+    fetch(`https://api.countapi.xyz/hit/josr957/${key}`, { cache: "no-store", mode: 'no-cors' });
+  }
+
+  initDisplay();
+  syncWithAPI();
+
+  /* =========================
+     LÓGICA DE ARTÍCULOS
+     ========================= */
+  const JSON_FILE = "articulos.json";
+  const $ = (id) => document.getElementById(id);
+  const els = {
+    grid: $("grid"), q: $("q"), tema: $("tema"), orden: $("orden"),
+    recargar: $("recargar"), limpiar: $("limpiar"), statusText: $("statusText")
+  };
+
+  let allArticles = [];
+
+  // Al pinchar un artículo: sumar localmente + sumar en la nube
+  els.grid.addEventListener("click", (ev) => {
+    const link = ev.target.closest("a.open-article");
+    if (!link) return;
+
+    // Actualizar pantalla al instante
+    const vTotal = cleanNum($("visitCount").textContent) + 1;
+    const vArts = cleanNum($("articleOpenCount").textContent) + 1;
+    
+    updateUI(vTotal, "visitCount", LS_TOTAL);
+    updateUI(vArts, "articleOpenCount", LS_ARTICLES);
+
+    // Enviar a la API
+    incrementAPI(COUNTER_TOTAL);
+    incrementAPI(COUNTER_ARTICLES);
+  }, { passive: true });
+
+  /* --- Renderizado y Filtros --- */
+  function setStatus(text, isError=false){
+    els.statusText.textContent = text;
+    els.statusText.className = isError ? "error" : "";
+  }
+
+  function normalizeArticle(a){
+    const n = (a?.nombre || "").toString();
+    const u = (a?.url || "").toString();
+    const partsN = n.split(" | ");
+    const partsU = u.split(" | ");
+    const url = (partsU[0] || u).trim();
+    const titulo = (partsN[1] || partsU[1] || partsN[0] || "Sin título").trim();
+    const fechaStr = (partsN[2] || partsU[2] || a?.fecha || "").toString().trim();
+    
+    // Parseo de fecha simple
+    let fObj = null;
+    const dmy = fechaStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+    if(dmy) fObj = new Date(dmy[3], dmy[2]-1, dmy[1]);
+
+    return { ...a, url, titulo, fecha: fechaStr, tema: (a.tema||"").trim(), _fObj: fObj };
+  }
+
+  function render(){
+    const q = els.q.value.toLowerCase();
+    const t = els.tema.value;
+    let filtered = allArticles.filter(a => (!t || a.tema === t) && (!q || `${a.titulo} ${a.tema} ${a.fecha}`.toLowerCase().includes(q)));
+    
+    const mode = els.orden.value;
+    filtered.sort((a,b) => {
+      if(mode.startsWith("fecha")) {
+        const timeA = a._fObj?.getTime() || 0;
+        const timeB = b._fObj?.getTime() || 0;
+        return mode === "fecha_desc" ? timeB - timeA : timeA - timeB;
+      }
+      return mode === "az" ? a.titulo.localeCompare(b.titulo) : b.titulo.localeCompare(a.titulo);
+    });
+
+    els.grid.innerHTML = filtered.length ? filtered.map(a => `
+      <div class="card">
+        <div>
+          <h3 class="title">${a.titulo}</h3>
+          <div class="meta">
+            ${a.tema ? `<span class="chip">Tema: ${a.tema}</span>` : ''}
+            ${a.fecha ? `<span class="chip">Fecha: ${a.fecha}</span>` : ''}
+          </div>
+        </div>
+        <div class="actions"><a class="action open-article" href="${a.url}" target="_blank">LEER ARTÍCULO</a></div>
+      </div>`).join("") : '<div class="card"><h3 class="title">No hay resultados</h3></div>';
+    setStatus(`${filtered.length} artículos`);
+  }
+
+  async function loadArticles(){
+    setStatus("Cargando...");
+    try{
+      const res = await fetch(`${JSON_FILE}?v=${Date.now()}`);
+      allArticles = (await res.json()).map(normalizeArticle);
+      const temas = [...new Set(allArticles.map(a => a.tema).filter(Boolean))].sort();
+      els.tema.innerHTML = '<option value="">Todos</option>' + temas.map(t => `<option value="${t}">${t}</option>`).join("");
+      render();
+    }catch(e){ setStatus("Error al cargar JSON", true); }
+  }
+
+  els.q.addEventListener("input", render);
+  els.tema.addEventListener("change", render);
+  els.orden.addEventListener("change", render);
+  els.recargar.addEventListener("click", loadArticles);
+  els.limpiar.addEventListener("click", () => { els.q.value = ""; els.tema.value = ""; render(); });
+
+  loadArticles();
+})();
+</script>
+</body>
+</html>
