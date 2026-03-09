@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+<meta charset="UTF-8">
+<title>Índice del Blog</title>
+
+<style>
+
+body{
+background:#0b0f17;
+color:white;
+font-family:Arial;
+margin:0;
+}
+
+header{
+background:#111a2a;
+padding:20px;
+border-bottom:1px solid #333;
+}
+
+h1{
+margin:0;
+font-size:20px;
+}
+
+.controls{
+padding:15px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+}
+
+input,select,button{
+padding:8px;
+border-radius:6px;
+border:none;
+}
+
+.grid{
+padding:20px;
+display:grid;
+gap:12px;
+}
+
+.card{
+background:#111a2a;
+padding:15px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.title{
+font-weight:bold;
+font-size:16px;
+}
+
+.meta{
+font-size:12px;
+color:#aaa;
+margin-top:6px;
+}
+
+a{
+color:#7aa2ff;
+text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<h1>Índice del Blog</h1>
+</header>
+
+<div class="controls">
+
+<input id="q" placeholder="Buscar artículo">
+
+<select id="tema">
+<option value="">Todos los temas</option>
+</select>
+
+<select id="orden">
+
+<option value="fecha_desc">Fecha nueva</option>
+<option value="fecha_asc">Fecha antigua</option>
+<option value="az">Título A-Z</option>
+<option value="za">Título Z-A</option>
+
+</select>
+
+<button id="recargar">Recargar</button>
+<button id="limpiar">Limpiar</button>
+
+</div>
+
+<div id="grid" class="grid"></div>
+
+<script>
+
+const JSON_FILE="articulos.json"
+
+let allArticles=[]
+
+function detectarTema(titulo){
+
+titulo=titulo.toLowerCase()
+
+if(titulo.includes("cuantica") ||
+titulo.includes("universo") ||
+titulo.includes("estrella") ||
+titulo.includes("materia"))
+return "Ciencia"
+
+if(titulo.includes("historia") ||
+titulo.includes("imperio") ||
+titulo.includes("arqueologia"))
+return "Historia"
+
+if(titulo.includes("ia") ||
+titulo.includes("algoritmo") ||
+titulo.includes("blockchain") ||
+titulo.includes("tecnologia"))
+return "Tecnología"
+
+if(titulo.includes("guerra") ||
+titulo.includes("geopolitica"))
+return "Geopolítica"
+
+if(titulo.includes("filosofia") ||
+titulo.includes("etica"))
+return "Filosofía"
+
+return "Otros"
+
+}
+
+
+function normalizeArticle(a){
+
+let titulo=""
+let fecha=null
+let url=""
+
+if(a.url){
+
+let parts=a.url.split("|")
+
+url=parts[0].trim()
+
+titulo=parts[1].trim()
+
+let fechaTexto=parts[2].trim()
+
+let f=fechaTexto.split("-")
+
+fecha=new Date(f[0],f[1]-1,f[2])
+
+}
+
+let tema=detectarTema(titulo)
+
+return{
+
+titulo,
+url,
+fecha,
+tema
+
+}
+
+}
+
+
+function render(){
+
+let q=document.getElementById("q").value.toLowerCase()
+
+let tema=document.getElementById("tema").value
+
+let lista=allArticles.filter(a=>{
+
+if(tema && a.tema!==tema) return false
+
+if(q){
+
+let s=(a.titulo+" "+a.tema).toLowerCase()
+
+if(!s.includes(q)) return false
+
+}
+
+return true
+
+})
+
+let orden=document.getElementById("orden").value
+
+lista.sort((a,b)=>{
+
+if(orden==="fecha_desc") return b.fecha-a.fecha
+
+if(orden==="fecha_asc") return a.fecha-b.fecha
+
+if(orden==="az") return a.titulo.localeCompare(b.titulo)
+
+if(orden==="za") return b.titulo.localeCompare(a.titulo)
+
+})
+
+let html=""
+
+lista.forEach(a=>{
+
+let fechaTexto=""
+
+if(a.fecha){
+
+fechaTexto=a.fecha.toISOString().split("T")[0]
+
+}
+
+html+=`
+
+<div class="card">
+
+<div>
+
+<div class="title">${a.titulo}</div>
+
+<div class="meta">
+
+${a.tema} • ${fechaTexto}
+
+</div>
+
+</div>
+
+<div>
+
+<a href="${a.url}" target="_blank">Leer</a>
+
+</div>
+
+</div>
+
+`
+
+})
+
+document.getElementById("grid").innerHTML=html
+
+}
+
+
+async function init(){
+
+let res=await fetch(JSON_FILE+"?"+Date.now())
+
+let data=await res.json()
+
+allArticles=data.map(normalizeArticle)
+
+let temas=[...new Set(allArticles.map(a=>a.tema))].sort()
+
+let select=document.getElementById("tema")
+
+select.innerHTML='<option value="">Todos</option>'
+
+temas.forEach(t=>{
+
+select.innerHTML+=`<option value="${t}">${t}</option>`
+
+})
+
+render()
+
+}
+
+
+document.getElementById("q").addEventListener("input",render)
+
+document.getElementById("tema").addEventListener("change",render)
+
+document.getElementById("orden").addEventListener("change",render)
+
+document.getElementById("recargar").addEventListener("click",init)
+
+document.getElementById("limpiar").addEventListener("click",()=>{
+
+document.getElementById("q").value=""
+
+document.getElementById("tema").value=""
+
+render()
+
+})
+
+
+init()
+
+</script>
+
+</body>
+</html>
