@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+<meta charset="UTF-8">
+<title>Explorando los Límites del Conocimiento</title>
+
+<style>
+
+body{
+background:#0b0f17;
+color:white;
+font-family:Arial;
+margin:0;
+}
+
+/* HEADER */
+
+.header{
+background:#0b1220;
+border-bottom:1px solid #333;
+padding:20px;
+}
+
+.header-container{
+display:flex;
+align-items:center;
+gap:20px;
+max-width:1200px;
+margin:auto;
+}
+
+.logo{
+width:60px;
+height:60px;
+object-fit:contain;
+}
+
+.title-block h1{
+margin:0;
+font-size:28px;
+font-weight:600;
+}
+
+.subtitle{
+font-size:13px;
+color:#8aa2c8;
+margin-top:4px;
+}
+
+/* CONTROLS */
+
+.controls{
+padding:15px;
+display:flex;
+gap:10px;
+flex-wrap:wrap;
+background:#111a2a;
+}
+
+input,select,button{
+padding:8px;
+border-radius:6px;
+border:none;
+}
+
+/* GRID */
+
+.grid{
+padding:20px;
+display:grid;
+gap:12px;
+max-width:1200px;
+margin:auto;
+}
+
+.card{
+background:#111a2a;
+padding:15px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.title{
+font-weight:bold;
+font-size:16px;
+}
+
+.meta{
+font-size:12px;
+color:#aaa;
+margin-top:6px;
+}
+
+a{
+color:#7aa2ff;
+text-decoration:none;
+font-weight:bold;
+}
+
+a:hover{
+text-decoration:underline;
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+<div class="header-container">
+
+<img src="logo.png" class="logo">
+
+<div class="title-block">
+
+<h1>Explorando los Límites del Conocimiento</h1>
+
+<div class="subtitle">
+Archivo de artículos científicos, históricos y filosóficos
+</div>
+
+</div>
+
+</div>
+
+</header>
+
+
+<div class="controls">
+
+<input id="q" placeholder="Buscar artículo">
+
+<select id="tema">
+<option value="">Todos los temas</option>
+</select>
+
+<select id="orden">
+<option value="fecha_desc">Más recientes</option>
+<option value="fecha_asc">Más antiguos</option>
+<option value="az">Título A-Z</option>
+<option value="za">Título Z-A</option>
+</select>
+
+<button onclick="init()">Recargar</button>
+
+</div>
+
+
+<div id="grid" class="grid"></div>
+
+
+<script>
+
+const JSON_FILE="articulos.json"
+
+let allArticles=[]
+
+
+function normalizeArticle(a){
+
+let titulo=""
+let fecha=null
+let url=""
+let tema="Otros"
+
+
+if(a.nombre){
+
+let p=a.nombre.split("|")
+
+if(p.length>1)
+titulo=p[1].trim()
+
+}
+
+
+if(a.url){
+
+let p=a.url.split("|")
+
+url=p[0].trim()
+
+if(p.length>2){
+
+let f=p[2].trim().split("-")
+
+fecha=new Date(f[0],f[1]-1,f[2])
+
+}
+
+}
+
+
+if(a.tema){
+tema=a.tema
+}
+
+
+return{
+
+titulo,
+url,
+fecha,
+tema
+
+}
+
+}
+
+
+
+function render(){
+
+let q=document.getElementById("q").value.toLowerCase()
+
+let tema=document.getElementById("tema").value
+
+
+let lista=allArticles.filter(a=>{
+
+if(tema && a.tema!==tema) return false
+
+if(q){
+
+let s=(a.titulo+" "+a.tema).toLowerCase()
+
+if(!s.includes(q)) return false
+
+}
+
+return true
+
+})
+
+
+let orden=document.getElementById("orden").value
+
+
+lista.sort((a,b)=>{
+
+if(orden==="fecha_desc") return b.fecha-a.fecha
+
+if(orden==="fecha_asc") return a.fecha-b.fecha
+
+if(orden==="az") return a.titulo.localeCompare(b.titulo)
+
+if(orden==="za") return b.titulo.localeCompare(a.titulo)
+
+})
+
+
+let html=""
+
+lista.forEach(a=>{
+
+let fechaTexto=""
+
+if(a.fecha){
+fechaTexto=a.fecha.toISOString().split("T")[0]
+}
+
+
+html+=`
+
+<div class="card">
+
+<div>
+
+<div class="title">${a.titulo}</div>
+
+<div class="meta">
+
+${a.tema} • ${fechaTexto}
+
+</div>
+
+</div>
+
+<div>
+
+<a href="${a.url}" target="_blank">Leer</a>
+
+</div>
+
+</div>
+
+`
+
+})
+
+
+document.getElementById("grid").innerHTML=html
+
+}
+
+
+
+async function init(){
+
+let res=await fetch(JSON_FILE+"?"+Date.now())
+
+let data=await res.json()
+
+allArticles=data.map(normalizeArticle)
+
+
+let temas=[...new Set(allArticles.map(a=>a.tema))].sort()
+
+
+let select=document.getElementById("tema")
+
+select.innerHTML='<option value="">Todos los temas</option>'
+
+
+temas.forEach(t=>{
+
+select.innerHTML+=`<option value="${t}">${t}</option>`
+
+})
+
+
+render()
+
+}
+
+
+document.getElementById("q").addEventListener("input",render)
+document.getElementById("tema").addEventListener("change",render)
+document.getElementById("orden").addEventListener("change",render)
+
+
+init()
+
+</script>
+
+</body>
+</html>
