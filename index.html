@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>CONOCIMIENTO</title>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#111;
+color:#eee;
+}
+
+header{
+text-align:center;
+padding:30px;
+background:#000;
+}
+
+header img{
+width:120px;
+}
+
+h1{
+margin:10px 0;
+letter-spacing:3px;
+}
+
+#controls{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+justify-content:center;
+padding:15px;
+background:#1a1a1a;
+}
+
+input,select,button{
+padding:8px;
+border:none;
+border-radius:4px;
+}
+
+button{
+background:#444;
+color:white;
+cursor:pointer;
+}
+
+#grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+padding:20px;
+}
+
+.card{
+background:#1c1c1c;
+padding:15px;
+border-radius:6px;
+}
+
+.card h3{
+margin-top:0;
+}
+
+.meta{
+font-size:12px;
+color:#aaa;
+margin-bottom:10px;
+}
+
+.btn{
+display:inline-block;
+padding:6px 10px;
+background:#444;
+color:#fff;
+text-decoration:none;
+border-radius:4px;
+}
+
+footer{
+text-align:center;
+padding:20px;
+background:#000;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<img src="LOGO.png">
+
+<h1>CONOCIMIENTO</h1>
+
+<div>
+Visitas totales: <span id="visitCount">0</span>
+</div>
+
+</header>
+
+
+<div id="controls">
+
+<input id="q" placeholder="Buscar...">
+
+<select id="tema">
+<option value="">Todos los temas</option>
+</select>
+
+<select id="orden">
+<option value="reciente">Más recientes</option>
+<option value="antiguo">Más antiguos</option>
+</select>
+
+<button id="recargar">Recargar</button>
+
+</div>
+
+
+<div id="grid"></div>
+
+
+<footer>
+
+Blog de conocimiento y análisis científico
+
+</footer>
+
+
+<script>
+
+const SUPABASE_URL="https://TU_PROYECTO.supabase.co"
+const SUPABASE_KEY="TU_API_KEY"
+
+const $=id=>document.getElementById(id)
+
+let articulos=[]
+
+
+async function increment(){
+
+try{
+
+await fetch(`${SUPABASE_URL}/rest/v1/rpc/incrementar_contador`,{
+
+method:"POST",
+
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:`Bearer ${SUPABASE_KEY}`,
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({row_id:"visitas_totales"})
+
+})
+
+}catch(e){}
+
+fetchCounters()
+
+}
+
+
+async function fetchCounters(){
+
+try{
+
+const res=await fetch(`${SUPABASE_URL}/rest/v1/contador?id=eq.visitas_totales`,{
+
+headers:{
+apikey:SUPABASE_KEY,
+Authorization:`Bearer ${SUPABASE_KEY}`
+}
+
+})
+
+const data=await res.json()
+
+if(data.length){
+
+$("visitCount").textContent=data[0].valor
+
+}
+
+}catch(e){}
+
+}
+
+
+
+async function cargarArticulos(){
+
+const res=await fetch("articulos.json")
+
+articulos=await res.json()
+
+}
+
+
+
+function construirTemas(){
+
+const temas=new Set()
+
+articulos.forEach(a=>temas.add(a.tema))
+
+temas.forEach(t=>{
+
+const op=document.createElement("option")
+op.value=t
+op.textContent=t
+$("tema").appendChild(op)
+
+})
+
+}
+
+
+
+function render(){
+
+const q=$("q").value.toLowerCase()
+
+const tema=$("tema").value
+
+const orden=$("orden").value
+
+let lista=[...articulos]
+
+
+if(q){
+
+lista=lista.filter(a=>a.nombre.toLowerCase().includes(q))
+
+}
+
+
+if(tema){
+
+lista=lista.filter(a=>a.tema===tema)
+
+}
+
+
+lista.sort((a,b)=>{
+
+if(orden==="reciente") return b.fecha.localeCompare(a.fecha)
+
+return a.fecha.localeCompare(b.fecha)
+
+})
+
+
+$("grid").innerHTML=""
+
+lista.forEach(a=>{
+
+const card=document.createElement("div")
+
+card.className="card"
+
+card.innerHTML=`
+
+<h3>${a.nombre}</h3>
+
+<div class="meta">
+
+${a.tema} | ${a.subtema}<br>
+${a.fecha}
+
+</div>
+
+<a class="btn" href="${a.url}" target="_blank">Leer</a>
+
+`
+
+$("grid").appendChild(card)
+
+})
+
+}
+
+
+
+async function init(){
+
+await cargarArticulos()
+
+construirTemas()
+
+render()
+
+fetchCounters()
+
+increment()
+
+}
+
+
+
+$("q").addEventListener("input",render)
+
+$("tema").addEventListener("change",render)
+
+$("orden").addEventListener("change",render)
+
+$("recargar").addEventListener("click",init)
+
+
+
+/*  SOLUCIÓN PARA SUMAR VISITA AL ABRIR ARTÍCULO  */
+
+$("grid").addEventListener("click",function(e){
+
+const link=e.target.closest("a.btn")
+
+if(!link) return
+
+increment()
+
+})
+
+
+init()
+
+</script>
+
+</body>
+</html>
