@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BLOG PARA LA DIVULGACION DEL CONOCIMIENTO</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:#0b0f17;
+color:#e9eefc;
+}
+header{
+background:#111a2a;
+padding:18px;
+border-bottom:1px solid rgba(255,255,255,.1);
+}
+.wrap{
+max-width:1100px;
+margin:auto;
+}
+.topbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+gap:16px;
+}
+.logo{
+width:60px;
+height:60px;
+border-radius:10px;
+}
+.brand h1{
+margin:0;
+font-size:20px;
+line-height:1.3;
+}
+.counter{
+margin-top:12px;
+padding:10px 14px;
+background:#0f1726;
+border-radius:10px;
+font-weight:700;
+display:inline-block;
+}
+.controls{
+margin-top:18px;
+display:grid;
+grid-template-columns:1fr 200px 200px auto;
+gap:10px;
+}
+input,select{
+padding:10px;
+border-radius:8px;
+border:none;
+background:#0f1726;
+color:white;
+}
+button{
+padding:10px 14px;
+border:none;
+border-radius:8px;
+background:#7aa2ff;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+.grid{
+margin-top:25px;
+display:grid;
+gap:14px;
+}
+.card{
+background:#111a2a;
+padding:16px;
+border-radius:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:16px;
+}
+.title{
+font-size:16px;
+font-weight:800;
+margin:0;
+}
+.meta{
+margin-top:8px;
+display:flex;
+gap:8px;
+flex-wrap:wrap;
+}
+.chip{
+background:rgba(122,162,255,.14);
+padding:4px 10px;
+border-radius:30px;
+font-size:12px;
+color:#a9b6d6;
+}
+a.btn{
+background:#7aa2ff;
+padding:10px 12px;
+border-radius:8px;
+text-decoration:none;
+color:white;
+font-weight:700;
+font-size:13px;
+cursor:pointer;
+white-space:nowrap;
+}
+@media (max-width:800px){
+.controls{
+grid-template-columns:1fr;
+}
+.card{
+flex-direction:column;
+align-items:flex-start;
+}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="wrap">
+
+<div class="topbar">
+<div class="brand">
+<h1>BLOG PARA LA DIVULGACION DEL CONOCIMIENTO<br>JOSÉ MARÍA PÉREZ QUINTANA</h1>
+</div>
+<img src="LOGO.png" class="logo" alt="Logo">
+</div>
+
+<div class="counter">
+📊 Visitas totales del blog: <span id="visitCount">...</span>
+</div>
+
+<div class="controls">
+<input id="q" placeholder="Buscar artículo">
+<select id="tema">
+<option value="">Todos los temas</option>
+</select>
+<select id="orden">
+<option value="fecha_desc">Fecha nueva</option>
+<option value="fecha_asc">Fecha antigua</option>
+<option value="az">Título A-Z</option>
+<option value="za">Título Z-A</option>
+</select>
+<button id="recargar">Recargar</button>
+</div>
+
+</div>
+</header>
+
+<main>
+<div class="wrap">
+<div id="grid" class="grid"></div>
+</div>
+</main>
+
+<script>
+const SUPABASE_URL = "https://isddztpzmmlxdqfzzmqb.supabase.co";
+const SUPABASE_KEY = "sb_publishable_3QxkThHs182AsPNnyPgZ9A_Vt0k4ssX";
+const JSON_FILE = "articulos.json";
+
+let allArticles = [];
+
+function $(id){
+  return document.getElementById(id);
+}
+
+async function fetchCounters(){
+  try{
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/contadores?select=id,valor`, {
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`
+      }
+    });
+
+    const data = await res.json();
+
+    data.forEach(c => {
+      if(c.id === "visitas_totales"){
+        $("visitCount").textContent = Number(c.valor).toLocaleString("es-ES");
+      }
+    });
+  }catch(e){
+    $("visitCount").textContent = "--";
+    console.error("Error al leer contador:", e);
+  }
+}
+
+function increment(){
+  try{
+    const url = `${SUPABASE_URL}/rest/v1/rpc/incrementar_contador`;
+    const body = JSON.stringify({ row_id: "visitas_totales" });
+
+    fetch(url, {
+      method: "POST",
+      keepalive: true,
+      headers: {
+        apikey: SUPABASE_KEY,
+        Authorization: `Bearer ${SUPABASE_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body
+    }).catch(err => console.error("Error al incrementar:", err));
+  }catch(e){
+    console.error("Error en increment:", e);
+  }
+}
+
+function parseDate(s){
+  if(!s) return null;
+  const p = s.split("-");
+  if(p.length !== 3) return null;
+  return new Date(p[0], p[1]-1, p[2]);
+}
+
+function normalize(a){
+  const pN = (a.nombre || "").split("|");
+  const pU = (a.url || "").split("|");
+
+  const titulo = (pN[1] || pU[1] || pN[0] || "Sin título").trim();
+  const url = (pU[0] || "").trim();
+  const fecha = (pU[2] || pN[2] || a.fecha || "").trim();
+
+  return {
+    titulo,
+    url,
+    fecha,
+    tema: (a.tema || "").trim(),
+    date: parseDate(fecha)
+  };
+}
+
+function render(){
+  const q = $("q").value.toLowerCase();
+  const tema = $("tema").value;
+
+  let lista = allArticles.filter(a => {
+    if(tema && a.tema !== tema) return false;
+
+    const s = `${a.titulo} ${a.tema} ${a.fecha}`.toLowerCase();
+    if(q && !s.includes(q)) return false;
+
+    return true;
+  });
+
+  const orden = $("orden").value;
+
+  lista.sort((a,b) => {
+    if(orden === "fecha_desc") return (b.date || 0) - (a.date || 0);
+    if(orden === "fecha_asc") return (a.date || 0) - (b.date || 0);
+    if(orden === "az") return a.titulo.localeCompare(b.titulo);
+    if(orden === "za") return b.titulo.localeCompare(a.titulo);
+    return 0;
+  });
+
+  $("grid").innerHTML = lista.map(a => `
+    <div class="card">
+      <div>
+        <h3 class="title">${a.titulo}</h3>
+        <div class="meta">
+          ${a.tema ? `<span class="chip">${a.tema}</span>` : ""}
+          ${a.fecha ? `<span class="chip">${a.fecha}</span>` : ""}
+        </div>
+      </div>
+      <a class="btn article-link" href="${a.url}" target="_blank" rel="noopener noreferrer">Leer</a>
+    </div>
+  `).join("");
+
+  bindArticleClicks();
+}
+
+function bindArticleClicks(){
+  document.querySelectorAll(".article-link").forEach(link => {
+    link.addEventListener("click", () => {
+      increment();
+      setTimeout(fetchCounters, 500);
+    });
+  });
+}
+
+async function init(){
+  fetchCounters();
+  increment();
+
+  const res = await fetch(`${JSON_FILE}?v=${Date.now()}`);
+  const data = await res.json();
+
+  allArticles = data.map(normalize);
+
+  const temas = [...new Set(allArticles.map(a => a.tema).filter(Boolean))].sort();
+
+  $("tema").innerHTML =
+    '<option value="">Todos</option>' +
+    temas.map(t => `<option>${t}</option>`).join("");
+
+  render();
+
+  setTimeout(fetchCounters, 500);
+}
+
+$("q").addEventListener("input", render);
+$("tema").addEventListener("change", render);
+$("orden").addEventListener("change", render);
+$("recargar").addEventListener("click", init);
+
+init();
+</script>
+
+</body>
+</html>
