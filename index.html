@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BLOG PARA LA DIVULGACION DEL CONOCIMIENTO</title>
+
+<style>
+body{
+margin:0;
+font-family:Arial,Helvetica,sans-serif;
+background:#0b0f17;
+color:#e9eefc;
+}
+
+header{
+background:#111a2a;
+padding:18px;
+border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.wrap{
+max-width:1100px;
+margin:auto;
+}
+
+.topbar{
+display:flex;
+align-items:center;
+justify-content:space-between;
+}
+
+.logo{
+width:60px;
+height:60px;
+border-radius:10px;
+}
+
+.brand h1{
+margin:0;
+font-size:20px;
+}
+
+.counter{
+margin-top:12px;
+padding:10px 14px;
+background:#0f1726;
+border-radius:10px;
+font-weight:700;
+display:inline-block;
+}
+
+.controls{
+margin-top:18px;
+display:grid;
+grid-template-columns:1fr 200px 200px;
+gap:10px;
+}
+
+input,select{
+padding:10px;
+border-radius:8px;
+border:none;
+background:#0f1726;
+color:white;
+}
+
+.grid{
+margin-top:25px;
+display:grid;
+gap:14px;
+}
+
+.card{
+background:#111a2a;
+padding:16px;
+border-radius:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.title{
+font-size:16px;
+font-weight:800;
+margin:0;
+}
+
+.meta{
+margin-top:8px;
+display:flex;
+gap:8px;
+}
+
+.chip{
+background:rgba(122,162,255,.14);
+padding:4px 10px;
+border-radius:30px;
+font-size:12px;
+color:#a9b6d6;
+}
+
+a.btn{
+background:#7aa2ff;
+padding:10px 12px;
+border-radius:8px;
+text-decoration:none;
+color:white;
+font-weight:700;
+font-size:13px;
+}
+
+.loading{
+text-align:center;
+padding:40px;
+color:#a9b6d6;
+}
+</style>
+</head>
+
+<body>
+<header>
+<div class="wrap">
+<div class="topbar">
+<div class="brand">
+<h1>BLOG PARA LA DIVULGACION DEL CONOCIMIENTO<br>JOSÉ MARÍA PÉREZ QUINTANA</h1>
+</div>
+<img src="LOGO.png" class="logo" onerror="this.style.display='none'">
+</div>
+<div class="counter">
+📊 Visitas totales del blog: <span id="visitCount">0</span>
+</div>
+<div class="controls">
+<input id="q" placeholder="Buscar artículo" type="text">
+<select id="tema">
+<option value="">Todos los temas</option>
+</select>
+<select id="orden">
+<option value="fecha_desc">Fecha nueva</option>
+<option value="fecha_asc">Fecha antigua</option>
+<option value="az">Título A-Z</option>
+<option value="za">Título Z-A</option>
+</select>
+</div>
+</div>
+</header>
+
+<main>
+<div class="wrap">
+<div id="grid" class="grid">
+<div class="loading">Cargando artículos...</div>
+</div>
+</div>
+</main>
+
+<script>
+const SUPABASE_URL = "https://isddztpzmmlxdqfzzmqb.supabase.co"
+const SUPABASE_KEY = "sb_publishable_3QxkThHs182AsPNnyPgZ9A_Vt0k4ssX"
+
+// ⭐ IMPORTANTE: Usar el ID correcto de tu tabla (1786948)
+const CONTADOR_ID = "1786948"  // ← CORREGIDO
+
+const JSON_FILE = "articulos.json"
+
+let allArticles = []
+
+// Función para obtener el contador actual
+async function cargarContador() {
+    try {
+        console.log("📊 Cargando contador desde Supabase...")
+        console.log(`🔑 Buscando ID: ${CONTADOR_ID}`)
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/contadores?id=eq.${CONTADOR_ID}&select=valor`, {
+            method: "GET",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json"
+            }
+        })
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+        }
+        
+        const data = await response.json()
+        console.log("Respuesta Supabase:", data)
+        
+        if (data && data.length > 0 && typeof data[0].valor === 'number') {
+            const visitas = data[0].valor
+            document.getElementById("visitCount").textContent = visitas.toLocaleString("es-ES")
+            console.log(`✅ Contador actual: ${visitas} visitas`)
+            return visitas
+        } else {
+            console.warn("⚠️ No se encontró el contador")
+            document.getElementById("visitCount").textContent = "0"
+            return 0
+        }
+    } catch (error) {
+        console.error("❌ Error al cargar contador:", error)
+        document.getElementById("visitCount").textContent = "?"
+        return null
+    }
+}
+
+// Función para incrementar el contador
+async function incrementarContador() {
+    try {
+        console.log("➕ Incrementando contador...")
+        
+        const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/incrementar_contador`, {
+            method: "POST",
+            headers: {
+                "apikey": SUPABASE_KEY,
+                "Authorization": `Bearer ${SUPABASE_KEY}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ id_param: CONTADOR_ID })
+        })
+        
+        if (!response.ok) {
+            const errorText = await response.text()
+            throw new Error(`HTTP ${response.status}: ${errorText}`)
+        }
+        
+        const nuevoValor = await response.json()
+        console.log(`✅ Contador incrementado a: ${nuevoValor} visitas`)
+        document.getElementById("visitCount").textContent = nuevoValor.toLocaleString("es-ES")
+        return true
+    } catch (error) {
+        console.error("❌ Error al incrementar:", error.message)
+        return false
+    }
+}
+
+// Función para formatear fechas
+function parseDate(s) {
+    if (!s) return null
+    const partes = s.split("-")
+    if (partes.length !== 3) return null
+    return new Date(partes[0], partes[1] - 1, partes[2])
+}
+
+// Función para normalizar los artículos
+function normalize(articulo) {
+    const nombreParts = (articulo.nombre || "").split("|")
+    const urlParts = (articulo.url || "").split("|")
+    
+    const titulo = (nombreParts[1] || urlParts[1] || nombreParts[0] || "Sin título").trim()
+    const url = (urlParts[0] || "").trim()
+    const fecha = (urlParts[2] || nombreParts[2] || "").trim()
+    
+    return {
+        titulo: titulo,
+        url: url,
+        fecha: fecha,
+        tema: (articulo.tema || "").trim(),
+        date: parseDate(fecha)
+    }
+}
+
+// Función para escapar HTML
+function escapeHtml(str) {
+    if (!str) return ""
+    const div = document.createElement("div")
+    div.textContent = str
+    return div.innerHTML
+}
+
+// Función para renderizar los artículos
+function renderizarArticulos() {
+    const busqueda = document.getElementById("q").value.toLowerCase()
+    const temaSeleccionado = document.getElementById("tema").value
+    const ordenSeleccionado = document.getElementById("orden").value
+    
+    let filtrados = allArticles.filter(articulo => {
+        if (temaSeleccionado && articulo.tema !== temaSeleccionado) return false
+        const textoBuscar = (articulo.titulo + " " + articulo.tema + " " + articulo.fecha).toLowerCase()
+        if (busqueda && !textoBuscar.includes(busqueda)) return false
+        return true
+    })
+    
+    // Ordenar
+    filtrados.sort((a, b) => {
+        if (ordenSeleccionado === "fecha_desc") return (b.date || 0) - (a.date || 0)
+        if (ordenSeleccionado === "fecha_asc") return (a.date || 0) - (b.date || 0)
+        if (ordenSeleccionado === "az") return a.titulo.localeCompare(b.titulo)
+        if (ordenSeleccionado === "za") return b.titulo.localeCompare(a.titulo)
+        return 0
+    })
+    
+    const grid = document.getElementById("grid")
+    
+    if (filtrados.length === 0) {
+        grid.innerHTML = '<div class="card" style="justify-content:center;">📭 No se encontraron artículos</div>'
+        return
+    }
+    
+    grid.innerHTML = filtrados.map(articulo => `
+        <div class="card">
+            <div>
+                <h3 class="title">${escapeHtml(articulo.titulo)}</h3>
+                <div class="meta">
+                    ${articulo.tema ? `<span class="chip">📁 ${escapeHtml(articulo.tema)}</span>` : ""}
+                    ${articulo.fecha ? `<span class="chip">📅 ${escapeHtml(articulo.fecha)}</span>` : ""}
+                </div>
+            </div>
+            <a class="btn open-article" href="${escapeHtml(articulo.url)}" target="_blank">📖 Leer</a>
+        </div>
+    `).join("")
+}
+
+// Función para cargar los artículos
+async function cargarArticulos() {
+    try {
+        console.log("📚 Cargando artículos...")
+        const response = await fetch(`${JSON_FILE}?t=${Date.now()}`)
+        
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`)
+        }
+        
+        const data = await response.json()
+        allArticles = data.map(normalize)
+        
+        // Extraer temas únicos
+        const temas = [...new Set(allArticles.map(a => a.tema).filter(Boolean))].sort()
+        const selectTema = document.getElementById("tema")
+        selectTema.innerHTML = '<option value="">📋 Todos los temas</option>' + 
+            temas.map(t => `<option value="${escapeHtml(t)}">📁 ${escapeHtml(t)}</option>`).join("")
+        
+        renderizarArticulos()
+        console.log(`✅ Cargados ${allArticles.length} artículos`)
+    } catch (error) {
+        console.error("❌ Error al cargar artículos:", error)
+        document.getElementById("grid").innerHTML = '<div class="card" style="justify-content:center;">❌ Error al cargar artículos. Verifica que articulos.json existe.</div>'
+    }
+}
+
+// Función principal de inicio
+async function init() {
+    console.log("🚀 Iniciando aplicación...")
+    console.log(`🔑 Usando Contador ID: ${CONTADOR_ID}`)
+    
+    // Mostrar estado de carga
+    document.getElementById("grid").innerHTML = '<div class="loading">🔄 Cargando...</div>'
+    
+    // 1. Cargar el contador actual
+    await cargarContador()
+    
+    // 2. Incrementar la visita (solo la primera vez que se abre la página)
+    if (!sessionStorage.getItem("visita_contada")) {
+        await incrementarContador()
+        sessionStorage.setItem("visita_contada", "true")
+    }
+    
+    // 3. Cargar los artículos
+    await cargarArticulos()
+}
+
+// Event listeners
+document.getElementById("q").addEventListener("input", renderizarArticulos)
+document.getElementById("tema").addEventListener("change", renderizarArticulos)
+document.getElementById("orden").addEventListener("change", renderizarArticulos)
+
+// Al hacer clic en un artículo, incrementar contador
+document.getElementById("grid").addEventListener("click", async (e) => {
+    const link = e.target.closest(".open-article")
+    if (link) {
+        await incrementarContador()
+    }
+})
+
+// Iniciar la aplicación
+init()
+</script>
+</body>
+</html>
