@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://josr957.github.io/Conocimiento/sitemap.xml
